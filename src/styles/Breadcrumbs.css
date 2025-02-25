@@ -1,0 +1,47 @@
+/* src/styles/Breadcrumbs.css */
+.breadcrumbs {
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .breadcrumbs a {
+    color: #666;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  
+  .breadcrumbs a:hover {
+    color: #ff6b00;
+  }
+  
+  .separator {
+    margin: 0 8px;
+    color: #ccc;
+  }
+  
+  .current {
+    color: #333;
+    font-weight: 500;
+  }
+  
+  /* Dark theme compatibility */
+  .dark-theme .breadcrumbs {
+    color: #aaa;
+  }
+  
+  .dark-theme .breadcrumbs a {
+    color: #aaa;
+  }
+  
+  .dark-theme .breadcrumbs a:hover {
+    color: #ff8c33;
+  }
+  
+  .dark-theme .separator {
+    color: #666;
+  }
+  
+  .dark-theme .current {
+    color: #eee;
+  }

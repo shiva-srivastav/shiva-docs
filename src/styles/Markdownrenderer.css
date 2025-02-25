@@ -1,0 +1,64 @@
+/* src/styles/MarkdownRenderer.css */
+.markdown-renderer {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .markdown-body {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  
+  .markdown-body h1 {
+    font-size: 2em;
+    margin-bottom: 1em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid #eaecef;
+  }
+  
+  .markdown-body h2 {
+    font-size: 1.5em;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid #eaecef;
+  }
+  
+  .markdown-body h3 {
+    font-size: 1.25em;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+  }
+  
+  .markdown-body p {
+    margin-bottom: 1em;
+  }
+  
+  .markdown-body ul, .markdown-body ol {
+    margin-bottom: 1em;
+    padding-left: 2em;
+  }
+  
+  .markdown-body li {
+    margin-bottom: 0.5em;
+  }
+  
+  .markdown-body pre {
+    margin-bottom: 1em;
+    padding: 16px;
+    overflow: auto;
+    background-color: #f6f8fa;
+    border-radius: 6px;
+  }
+  
+  .markdown-body code {
+    font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+  }
+  
+  .markdown-image {
+    max-width: 100%;
+    border-radius: 4px;
+    margin: 1em 0;
+  }

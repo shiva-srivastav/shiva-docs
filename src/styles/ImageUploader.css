@@ -1,0 +1,248 @@
+/* src/styles/ImageUploader.css */
+.image-uploader {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+  }
+  
+  .image-uploader h3 {
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  .image-drop-area {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    transition: all 0.3s;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+  
+  .image-drop-area.dragging {
+    background-color: #f7f9fc;
+    border-color: #0066cc;
+  }
+  
+  .drop-icon {
+    color: #777;
+    margin-bottom: 10px;
+  }
+  
+  .image-drop-area p {
+    margin-bottom: 10px;
+    color: #555;
+  }
+  
+  .file-input {
+    display: none;
+  }
+  
+  .browse-button {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .browse-button:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .image-preview-container {
+    margin-top: 20px;
+  }
+  
+  .image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .image-item {
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+  }
+  
+  .image-item.uploaded {
+    border: 2px solid #52c41a;
+  }
+  
+  .image-preview {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    display: block;
+  }
+  
+  .image-info {
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .image-item:hover .image-info {
+    opacity: 1;
+  }
+  
+  .image-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+  }
+  
+  .remove-image {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 10px;
+    transition: background-color 0.3s;
+  }
+  
+  .remove-image:hover {
+    background-color: rgba(255, 0, 0, 0.8);
+  }
+  
+  .upload-status {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background-color: #52c41a;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+  }
+  
+  .upload-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .upload-button {
+    padding: 8px 16px;
+    background-color: #ff6b00;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .upload-button:hover {
+    background-color: #ff8c33;
+  }
+  
+  .upload-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .upload-message {
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .upload-message.success {
+    background-color: #f6ffed;
+    border: 1px solid #b7eb8f;
+    color: #52c41a;
+  }
+  
+  .upload-message.error {
+    background-color: #fff2f0;
+    border: 1px solid #ffccc7;
+    color: #ff4d4f;
+  }
+  
+  .image-usage-info {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+  }
+  
+  .image-usage-info h4 {
+    font-size: 1em;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .image-usage-info pre {
+    background-color: #f6f8fa;
+    padding: 10px;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-family: monospace;
+    font-size: 14px;
+  }
+  
+  /* Dark theme compatibility */
+  .dark-theme .image-uploader {
+    background-color: #252525;
+  }
+  
+  .dark-theme .image-uploader h3,
+  .dark-theme .image-usage-info h4 {
+    color: #eee;
+  }
+  
+  .dark-theme .image-drop-area {
+    border-color: #444;
+  }
+  
+  .dark-theme .browse-button {
+    background-color: #333;
+    color: #eee;
+  }
+  
+  .dark-theme .browse-button:hover {
+    background-color: #444;
+  }
+  
+  .dark-theme .image-drop-area p {
+    color: #aaa;
+  }
+  
+  .dark-theme .image-usage-info pre {
+    background-color: #333;
+    color: #eee;
+  }
+  
+  .dark-theme .image-usage-info {
+    border-top-color: #444;
+  }

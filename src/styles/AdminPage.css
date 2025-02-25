@@ -1,0 +1,38 @@
+/* Add to src/styles/AdminPage.css */
+.admin-tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .tab-button {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #666;
+    transition: all 0.3s;
+  }
+  
+  .tab-button.active {
+    color: #ff6b00;
+    border-bottom: 2px solid #ff6b00;
+  }
+  
+  .tab-button:hover {
+    color: #ff8c33;
+  }
+  
+  /* Dark theme compatibility */
+  .dark-theme .admin-tabs {
+    border-bottom-color: #444;
+  }
+  
+  .dark-theme .tab-button {
+    color: #aaa;
+  }
+  
+  .dark-theme .tab-button.active {
+    color: #ff8c33;
+  }

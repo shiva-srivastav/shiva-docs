@@ -1,0 +1,42 @@
+/* src/styles/Loading.css */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 0;
+  }
+  
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-left-color: #ff6b00;
+    animation: spinner 1s linear infinite;
+    margin-bottom: 15px;
+  }
+  
+  @keyframes spinner {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .loading-container p {
+    color: #666;
+    font-size: 16px;
+  }
+  
+  /* Dark theme compatibility */
+  .dark-theme .loading-spinner {
+    border-color: rgba(255, 255, 255, 0.1);
+    border-left-color: #ff8c33;
+  }
+  
+  .dark-theme .loading-container p {
+    color: #aaa;
+  }
