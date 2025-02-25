@@ -123,9 +123,11 @@ const AdminPage = () => {
               >
                 <option value="">Select a category</option>
                 <option value="basics">Basics</option>
+                <option value="spring">spring</option>
                 <option value="tutorials">Tutorials</option>
                 <option value="api">API</option>
                 <option value="advanced">Advanced</option>
+               
               </select>
             </div>
             

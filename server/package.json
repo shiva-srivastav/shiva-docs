@@ -15,9 +15,11 @@
   "express": "^4.21.2",
   "fs-extra": "^11.3.0",
   "markdown-it": "^14.1.0",
+  "multer": "^1.4.5-lts.1",
   "path": "^0.12.7",
   "server": "file:",
-  "shiva-docs-server": "file:"
+  "shiva-docs-server": "file:",
+  "uuid": "^11.1.0"
  },
  "devDependencies": {
   "nodemon": "^2.0.22"

@@ -21,7 +21,7 @@ const HomePage = () => {
         <div className="card">
           <h2>Tutorials</h2>
           <p>Step-by-step guides to help you build your first project.</p>
-          <Link to="/tutorials/first-project" className="card-link">
+          <Link to="/basics/first-project" className="card-link">
             Read More →
           </Link>
         </div>
@@ -29,7 +29,7 @@ const HomePage = () => {
         <div className="card">
           <h2>API Reference</h2>
           <p>Detailed documentation for our APIs.</p>
-          <Link to="/api/overview" className="card-link">
+          <Link to="/basics/overview" className="card-link">
             Read More →
           </Link>
         </div>

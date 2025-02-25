@@ -1,5 +1,5 @@
 // src/components/AdminPanel.js
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useContent } from '../context/ContentContext';
 import '../styles/AdminPanel.css';
 
@@ -10,7 +10,8 @@ const AdminPanel = () => {
     createCategory, 
     deleteContent, 
     deleteCategory, 
-    refreshContent 
+    refreshContent,
+    loading
   } = useContent();
   
   // State for category creation
@@ -39,6 +40,32 @@ const AdminPanel = () => {
   const fileInputRef = useRef(null);
   const imageInputRef = useRef(null);
   
+  // Fetch images on component mount
+  useEffect(() => {
+    fetchImages();
+  }, []);
+  
+  // Fetch existing images
+  const fetchImages = async () => {
+    try {
+      const API_URL = 'http://localhost:5000/api';
+      const response = await fetch(`${API_URL}/admin/images`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.images && Array.isArray(data.images)) {
+          setUploadedImages(data.images);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching images:', error);
+      setImageMessage({
+        text: 'Failed to load existing images',
+        type: 'error'
+      });
+    }
+  };
+  
   // Handle creating a new category
   const handleCreateCategory = async (e) => {
     e.preventDefault();
@@ -57,6 +84,21 @@ const AdminPanel = () => {
       setNewCategory('');
     } else {
       setCategoryMessage({ text: 'Failed to create category', type: 'error' });
+    }
+  };
+  
+  // Handle deleting a category
+  const handleDeleteCategory = async (category, categoryName) => {
+    if (!window.confirm(`Are you sure you want to delete the "${categoryName}" category? This will delete all content in this category and cannot be undone.`)) {
+      return;
+    }
+    
+    const success = await deleteCategory(category);
+    
+    if (success) {
+      setCategoryMessage({ text: `Category "${categoryName}" deleted successfully`, type: 'success' });
+    } else {
+      setCategoryMessage({ text: `Failed to delete category "${categoryName}"`, type: 'error' });
     }
   };
   
@@ -80,12 +122,6 @@ const AdminPanel = () => {
     
     if (success) {
       setContentMessage({ text: `Content "${title}" saved successfully`, type: 'success' });
-      
-      // Optional: reset form fields
-      // setTitle('');
-      // setSlug('');
-      // setMarkdownContent('');
-      // setUploadedFile(null);
     } else {
       setContentMessage({ text: 'Failed to save content', type: 'error' });
     }
@@ -151,7 +187,7 @@ const AdminPanel = () => {
     setUploadingImage(true);
     setImageMessage({ text: 'Uploading images...', type: 'info' });
     
-    const uploadedFiles = [];
+    const newImages = [];
     const API_URL = 'http://localhost:5000/api';
     
     try {
@@ -172,20 +208,24 @@ const AdminPanel = () => {
         
         if (response.ok) {
           const data = await response.json();
-          uploadedFiles.push({
-            name: file.name,
+          newImages.push({
+            name: data.name,
             url: data.url,
-            size: file.size
+            size: data.size,
+            created: new Date().toISOString()
           });
         }
       }
       
-      if (uploadedFiles.length > 0) {
-        setUploadedImages([...uploadedImages, ...uploadedFiles]);
+      if (newImages.length > 0) {
+        setUploadedImages(prev => [...prev, ...newImages]);
         setImageMessage({ 
-          text: `Successfully uploaded ${uploadedFiles.length} image(s)`, 
+          text: `Successfully uploaded ${newImages.length} image(s)`, 
           type: 'success' 
         });
+        
+        // Clear the file input
+        imageInputRef.current.value = '';
       } else {
         setImageMessage({ 
           text: 'No images were uploaded', 
@@ -200,6 +240,39 @@ const AdminPanel = () => {
       });
     } finally {
       setUploadingImage(false);
+    }
+  };
+  
+  // Handle image deletion
+  const handleDeleteImage = async (imageName) => {
+    if (!window.confirm(`Are you sure you want to delete this image? This action cannot be undone.`)) {
+      return;
+    }
+    
+    try {
+      const API_URL = 'http://localhost:5000/api';
+      const response = await fetch(`${API_URL}/admin/images/${imageName}`, {
+        method: 'DELETE'
+      });
+      
+      if (response.ok) {
+        setUploadedImages(prev => prev.filter(img => img.name !== imageName));
+        setImageMessage({
+          text: 'Image deleted successfully',
+          type: 'success'
+        });
+      } else {
+        setImageMessage({
+          text: 'Failed to delete image',
+          type: 'error'
+        });
+      }
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      setImageMessage({
+        text: 'Failed to delete image',
+        type: 'error'
+      });
     }
   };
   
@@ -224,6 +297,10 @@ const AdminPanel = () => {
     await refreshContent();
     setContentMessage({ text: 'Content refreshed from server', type: 'success' });
   };
+  
+  if (loading) {
+    return <div className="loading-message">Loading content structure...</div>;
+  }
   
   return (
     <div className="admin-panel">
@@ -426,22 +503,7 @@ Write your markdown content here..."
                     </div>
                     <button 
                       className="delete-button"
-                      onClick={async () => {
-                        if (window.confirm(`Are you sure you want to delete the "${category.name}" category and all its content?`)) {
-                          const success = await deleteCategory(category.slug);
-                          if (success) {
-                            setCategoryMessage({ 
-                              text: `Category "${category.name}" deleted successfully`, 
-                              type: 'success' 
-                            });
-                          } else {
-                            setCategoryMessage({ 
-                              text: `Failed to delete category "${category.name}"`, 
-                              type: 'error' 
-                            });
-                          }
-                        }
-                      }}
+                      onClick={() => handleDeleteCategory(category.slug, category.name)}
                     >
                       Delete
                     </button>
@@ -524,7 +586,13 @@ Write your markdown content here..."
                           className="insert-button"
                           onClick={() => insertImageUrl(image.url)}
                         >
-                          Insert in Editor
+                          Insert
+                        </button>
+                        <button
+                          className="delete-button small"
+                          onClick={() => handleDeleteImage(image.name)}
+                        >
+                          Delete
                         </button>
                       </div>
                     </div>
@@ -537,7 +605,7 @@ Write your markdown content here..."
               <h4>Using Images in Markdown</h4>
               <p>To add an image to your content, use the following markdown syntax:</p>
               <pre>![Alt text](/path/to/image.jpg)</pre>
-              <p>You can copy image URLs from the list above, or click "Insert in Editor" to add them directly to your content.</p>
+              <p>You can copy image URLs from the list above, or click "Insert" to add them directly to your content.</p>
             </div>
           </div>
         </div>

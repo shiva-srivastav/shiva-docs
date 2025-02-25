@@ -4,6 +4,8 @@ const cors = require('cors');
 const fs = require('fs-extra');
 const path = require('path');
 const MarkdownIt = require('markdown-it');
+const multer = require('multer');
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -16,6 +18,31 @@ app.use(express.json());
 // Content directory path
 const contentDir = path.join(__dirname, 'content');
 
+// Configure multer for image uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, 'content', 'images'));
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname);
+    cb(null, `${uuidv4()}${ext}`);
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  },
+  fileFilter: function (req, file, cb) {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'));
+    }
+  }
+});
+
 // Route to get all available categories
 app.get('/api/categories', async (req, res) => {
   try {
@@ -26,7 +53,7 @@ app.get('/api/categories', async (req, res) => {
       const categoryPath = path.join(contentDir, category);
       const stat = await fs.stat(categoryPath);
       
-      if (stat.isDirectory()) {
+      if (stat.isDirectory() && category !== 'images') {
         const files = await fs.readdir(categoryPath);
         const items = [];
         
@@ -76,8 +103,6 @@ app.get('/api/content/:category/:slug', async (req, res) => {
     res.status(500).json({ error: 'Failed to get content' });
   }
 });
-
-// Admin routes to manage content
 
 // Create a new category
 app.post('/api/admin/categories', async (req, res) => {
@@ -171,11 +196,89 @@ app.delete('/api/admin/categories/:category', async (req, res) => {
   }
 });
 
+// Upload an image
+app.post('/api/admin/images', upload.single('image'), (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file provided' });
+    }
+    
+    // Get the server's base URL
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    const imageUrl = `${baseUrl}/content/images/${req.file.filename}`;
+    
+    res.status(201).json({
+      url: imageUrl,
+      name: req.file.filename,
+      originalName: req.file.originalname,
+      size: req.file.size
+    });
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    res.status(500).json({ error: 'Failed to upload image' });
+  }
+});
+
+// Get all images
+app.get('/api/admin/images', async (req, res) => {
+  try {
+    const imagesDir = path.join(contentDir, 'images');
+    
+    if (!(await fs.pathExists(imagesDir))) {
+      return res.json({ images: [] });
+    }
+    
+    const files = await fs.readdir(imagesDir);
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    
+    const images = await Promise.all(files.map(async (file) => {
+      const filePath = path.join(imagesDir, file);
+      const stats = await fs.stat(filePath);
+      
+      return {
+        name: file,
+        url: `${baseUrl}/content/images/${file}`,
+        size: stats.size,
+        created: stats.birthtime
+      };
+    }));
+    
+    res.json({ images });
+  } catch (error) {
+    console.error('Error getting images:', error);
+    res.status(500).json({ error: 'Failed to get images' });
+  }
+});
+
+// Delete an image
+app.delete('/api/admin/images/:filename', async (req, res) => {
+  try {
+    const { filename } = req.params;
+    const filePath = path.join(contentDir, 'images', filename);
+    
+    if (await fs.pathExists(filePath)) {
+      await fs.remove(filePath);
+      res.status(200).json({ message: 'Image deleted successfully' });
+    } else {
+      res.status(404).json({ error: 'Image not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting image:', error);
+    res.status(500).json({ error: 'Failed to delete image' });
+  }
+});
+
+// Serve static images
+app.use('/content/images', express.static(path.join(contentDir, 'images')));
+
 // Create content directories if they don't exist
 async function initializeContentDirectories() {
   try {
     // Create the main content directory if it doesn't exist
     await fs.ensureDir(contentDir);
+    
+    // Create the images directory
+    await fs.ensureDir(path.join(contentDir, 'images'));
     
     // Create default categories if they don't exist
     const defaultCategories = ['basics', 'tutorials', 'api'];
