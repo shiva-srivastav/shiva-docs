@@ -1,0 +1,25 @@
+{
+ "name": "shiva-docs-server",
+ "version": "1.0.0",
+ "description": "Express server for Shiva Docs",
+ "main": "server.js",
+ "scripts": {
+  "start": "node server.js",
+  "dev": "nodemon server.js"
+ },
+ "keywords": [],
+ "author": "shiva",
+ "license": "ISC",
+ "dependencies": {
+  "cors": "^2.8.5",
+  "express": "^4.21.2",
+  "fs-extra": "^11.3.0",
+  "markdown-it": "^14.1.0",
+  "path": "^0.12.7",
+  "server": "file:",
+  "shiva-docs-server": "file:"
+ },
+ "devDependencies": {
+  "nodemon": "^2.0.22"
+ }
+}
