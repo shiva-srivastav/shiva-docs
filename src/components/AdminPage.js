@@ -16,6 +16,7 @@ const AdminPage = () => {
     title: '',
     slug: ''
   });
+  // eslint-disable-next-line
   const [uploadedImages, setUploadedImages] = useState([]);
 
   const handleFileAdded = (fileData) => {

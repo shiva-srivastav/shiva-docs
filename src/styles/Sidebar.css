@@ -38,7 +38,7 @@
   padding: 10px 20px;
   cursor: pointer;
   transition: background-color 0.2s;
-  color: var(--text-primary);
+  user-select: none;
 }
 
 .category-header:hover {
@@ -46,8 +46,14 @@
 }
 
 .arrow {
-  transition: transform 0.3s;
-  color: var(--text-secondary);
+  transition: transform 0.3s ease;
+  display: inline-block;
+  font-size: 16px;
+  margin-left: 5px;
+}
+
+.arrow.right {
+  transform: rotate(0deg);
 }
 
 .arrow.down {
@@ -55,12 +61,12 @@
 }
 
 .subcategories {
-  padding-left: 20px;
+  padding-left: 0;
 }
 
 .subcategory-item {
   display: block;
-  padding: 8px 20px;
+  padding: 8px 20px 8px 40px;
   color: var(--text-secondary);
   text-decoration: none;
   transition: color 0.2s, background-color 0.2s;
@@ -75,6 +81,7 @@
   color: var(--accent-color);
   background-color: rgba(255, 107, 0, 0.1);
   border-left: 3px solid var(--accent-color);
+  padding-left: 37px; /* Adjust for the border */
 }
 
 /* Light theme overrides */
@@ -101,8 +108,52 @@
 /* Dark theme overrides */
 .dark-theme .sidebar {
   background-color: #1a1a1a;
+  border-right: 1px solid #333333;
 }
 
 .dark-theme .category-header {
   color: #e0e0e0;
+}
+
+.dark-theme .subcategory-item {
+  color: #b0b0b0;
+}
+
+.dark-theme .subcategory-item:hover {
+  color: #e0e0e0;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark-theme .subcategory-item.active {
+  color: #ff8c33;
+  background-color: rgba(255, 140, 51, 0.1);
+  border-left: 3px solid #ff8c33;
+}
+
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+  }
+  
+  .subcategory-item {
+    padding: 10px 20px 10px 40px;
+  }
+  
+  .subcategory-item.active {
+    padding-left: 37px;
+  }
+}
+
+/* Animation for expanding and collapsing categories */
+.subcategories {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.category .subcategories {
+  max-height: 1000px; /* Large enough to fit all subcategories */
 }

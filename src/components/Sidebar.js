@@ -1,5 +1,5 @@
-// src/components/Sidebar.js (updated)
-import React, { useState } from 'react';
+// src/components/Sidebar.js
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useContent } from '../context/ContentContext';
 import '../styles/Sidebar.css';
@@ -9,20 +9,23 @@ const Sidebar = () => {
   const { sidebarData } = useContent();
   const location = useLocation();
 
+  // Initialize expanded categories based on current path
+  useEffect(() => {
+    const pathParts = location.pathname.split('/');
+    if (pathParts.length > 1) {
+      const currentCategory = pathParts[1];
+      setExpandedCategories(prev => ({
+        ...prev,
+        [currentCategory]: true
+      }));
+    }
+  }, [location.pathname]);
+
   const toggleCategory = (category) => {
     setExpandedCategories(prev => ({
       ...prev,
       [category]: !prev[category]
     }));
-  };
-
-  // Check if we should expand a category based on the current path
-  const shouldExpand = (categorySlug) => {
-    const pathParts = location.pathname.split('/');
-    if (pathParts.length > 1 && pathParts[1] === categorySlug) {
-      return true;
-    }
-    return expandedCategories[categorySlug] || false;
   };
 
   // Check if an item is active
@@ -35,7 +38,7 @@ const Sidebar = () => {
       <div className="logo">
         <Link to="/">Shiva Docs</Link>
       </div>
-      <div className="sidebar-menu">
+      <nav className="sidebar-menu">
         {sidebarData.map((category) => (
           <div key={category.slug} className="category">
             <div 
@@ -43,9 +46,9 @@ const Sidebar = () => {
               onClick={() => toggleCategory(category.slug)}
             >
               <span>{category.name}</span>
-              <span className={`arrow ${shouldExpand(category.slug) ? 'down' : 'right'}`}>›</span>
+              <span className={`arrow ${expandedCategories[category.slug] ? 'down' : 'right'}`}>›</span>
             </div>
-            {shouldExpand(category.slug) && (
+            {expandedCategories[category.slug] && category.items && category.items.length > 0 && (
               <div className="subcategories">
                 {category.items.map((item) => (
                   <Link 
@@ -60,7 +63,7 @@ const Sidebar = () => {
             )}
           </div>
         ))}
-      </div>
+      </nav>
     </div>
   );
 };

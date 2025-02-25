@@ -1,0 +1,544 @@
+/* src/styles/MarkdownRenderer.css */
+
+/* Emergency override for light theme content */
+.light-theme .markdown-renderer,
+.light-theme .markdown-body,
+.light-theme .markdown-body h1,
+.light-theme .markdown-body h2,
+.light-theme .markdown-body h3,
+.light-theme .markdown-body p,
+.light-theme .markdown-body li,
+.light-theme .markdown-body code,
+.light-theme .markdown-body pre {
+  background-color: #ffffff !important;
+  color: #333333 !important;
+}
+
+.light-theme .content-container,
+.light-theme .content-main,
+.light-theme .page-content {
+  background-color: #ffffff !important;
+}
+
+/* Make sure the content isn't hidden by any background overlays */
+.light-theme .markdown-body::before,
+.light-theme .markdown-renderer::before {
+  content: none !important;
+  background: none !important;
+}
+
+/* Emergency override for dark theme content */
+.dark-theme .markdown-renderer,
+.dark-theme .markdown-body,
+.dark-theme .markdown-body h1,
+.dark-theme .markdown-body h2,
+.dark-theme .markdown-body h3,
+.dark-theme .markdown-body p,
+.dark-theme .markdown-body li {
+  background-color: #121212 !important;
+  color: #e0e0e0 !important;
+}
+
+.dark-theme .markdown-body code {
+  background-color: #2d2d2d !important;
+  color: #e0e0e0 !important;
+}
+
+.dark-theme .markdown-body pre,
+.dark-theme .markdown-body pre > code {
+  background-color: #2d2d2d !important;
+  color: #e0e0e0 !important;
+}
+
+.dark-theme .content-container,
+.dark-theme .content-main,
+.dark-theme .page-content {
+  background-color: #121212 !important;
+}
+
+/* Dark theme borders */
+.dark-theme .markdown-body h1,
+.dark-theme .markdown-body h2 {
+  border-bottom-color: #333333 !important;
+}
+
+/* Code block styling with syntax highlighting for dark theme */
+.dark-theme .markdown-body pre,
+.dark-theme .code-block-wrapper pre {
+  background-color: #1e1e1e !important; /* Darker background for code blocks */
+  border: 1px solid #333 !important;
+}
+
+/* Syntax highlighting colors for dark theme */
+.dark-theme .markdown-body pre .token.keyword,
+.dark-theme .markdown-body code .token.keyword {
+  color: #569cd6 !important; /* Blue for keywords */
+}
+
+.dark-theme .markdown-body pre .token.string,
+.dark-theme .markdown-body code .token.string {
+  color: #ce9178 !important; /* Orange-brown for strings */
+}
+
+.dark-theme .markdown-body pre .token.function,
+.dark-theme .markdown-body code .token.function {
+  color: #dcdcaa !important; /* Yellow for functions */
+}
+
+.dark-theme .markdown-body pre .token.comment,
+.dark-theme .markdown-body code .token.comment {
+  color: #6a9955 !important; /* Green for comments */
+}
+
+.dark-theme .markdown-body pre .token.number,
+.dark-theme .markdown-body code .token.number {
+  color: #b5cea8 !important; /* Light green for numbers */
+}
+
+.dark-theme .markdown-body pre .token.operator,
+.dark-theme .markdown-body code .token.operator {
+  color: #d4d4d4 !important; /* Light gray for operators */
+}
+
+.dark-theme .markdown-body pre .token.punctuation,
+.dark-theme .markdown-body code .token.punctuation {
+  color: #d4d4d4 !important; /* Light gray for punctuation */
+}
+
+.dark-theme .markdown-body pre .token.class-name,
+.dark-theme .markdown-body code .token.class-name {
+  color: #4ec9b0 !important; /* Teal for class names */
+}
+
+/* JavaScript specific syntax for dark theme */
+.dark-theme .markdown-body pre.language-javascript .token.keyword,
+.dark-theme .markdown-body code.language-javascript .token.keyword {
+  color: #569cd6 !important; /* Blue for keywords */
+}
+
+.dark-theme .markdown-body pre.language-javascript .token.string,
+.dark-theme .markdown-body code.language-javascript .token.string {
+  color: #ce9178 !important; /* Orange-brown for strings */
+}
+
+.dark-theme .markdown-body pre.language-javascript .token.function,
+.dark-theme .markdown-body code.language-javascript .token.function {
+  color: #dcdcaa !important; /* Yellow for functions */
+}
+
+.dark-theme .markdown-body pre.language-javascript .token.boolean,
+.dark-theme .markdown-body code.language-javascript .token.boolean {
+  color: #569cd6 !important; /* Blue for booleans */
+}
+
+.dark-theme .markdown-body pre.language-javascript .token.operator,
+.dark-theme .markdown-body code.language-javascript .token.operator {
+  color: #d4d4d4 !important; /* Light gray for operators */
+}
+
+.dark-theme .markdown-body pre.language-javascript .token.variable,
+.dark-theme .markdown-body code.language-javascript .token.variable {
+  color: #9cdcfe !important; /* Light blue for variables */
+}
+
+/* Python specific syntax for dark theme */
+.dark-theme .markdown-body pre.language-python .token.keyword,
+.dark-theme .markdown-body code.language-python .token.keyword {
+  color: #569cd6 !important; /* Blue for keywords */
+}
+
+.dark-theme .markdown-body pre.language-python .token.string,
+.dark-theme .markdown-body code.language-python .token.string {
+  color: #ce9178 !important; /* Orange-brown for strings */
+}
+
+.dark-theme .markdown-body pre.language-python .token.function,
+.dark-theme .markdown-body code.language-python .token.function {
+  color: #dcdcaa !important; /* Yellow for functions */
+}
+
+.dark-theme .markdown-body pre.language-python .token.boolean,
+.dark-theme .markdown-body code.language-python .token.boolean {
+  color: #569cd6 !important; /* Blue for booleans */
+}
+
+.dark-theme .markdown-body pre.language-python .token.builtin,
+.dark-theme .markdown-body code.language-python .token.builtin {
+  color: #4ec9b0 !important; /* Teal for built-in functions */
+}
+
+/* Line number styling for dark theme */
+.dark-theme .markdown-body pre .line-number {
+  color: #858585 !important;
+  opacity: 0.5;
+}
+
+/* Make sure the code blocks in light theme are styled properly too */
+.light-theme .markdown-body pre,
+.light-theme .code-block-wrapper pre {
+  background-color: #f6f8fa !important;
+  border: 1px solid #e8e8e8 !important;
+}
+
+/* Syntax highlighting colors for light theme */
+.light-theme .markdown-body pre .token.keyword,
+.light-theme .markdown-body code .token.keyword {
+  color: #0000ff !important; /* Blue for keywords */
+}
+
+.light-theme .markdown-body pre .token.string,
+.light-theme .markdown-body code .token.string {
+  color: #a31515 !important; /* Red for strings */
+}
+
+.light-theme .markdown-body pre .token.function,
+.light-theme .markdown-body code .token.function {
+  color: #795e26 !important; /* Brown for functions */
+}
+
+.light-theme .markdown-body pre .token.comment,
+.light-theme .markdown-body code .token.comment {
+  color: #008000 !important; /* Green for comments */
+}
+
+.light-theme .markdown-body pre .token.number,
+.light-theme .markdown-body code .token.number {
+  color: #098658 !important; /* Green for numbers */
+}
+
+.light-theme .markdown-body pre .token.class-name,
+.light-theme .markdown-body code .token.class-name {
+  color: #267f99 !important; /* Teal for class names */
+}
+
+.markdown-renderer {
+  background-color: var(--bg-content);
+  padding: 0;
+  color: var(--text-primary);
+  width: 100%;
+}
+
+.markdown-body {
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.markdown-body h1 {
+  font-size: 2.5em;
+  margin-top: 0;
+  margin-bottom: 1em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.markdown-body h2 {
+  font-size: 1.8em;
+  margin-top: 1.75em;
+  margin-bottom: 0.75em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.markdown-body h3 {
+  font-size: 1.4em;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.markdown-body p {
+  margin-bottom: 1.2em;
+  color: var(--text-primary);
+}
+
+.markdown-body a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+.markdown-body a:hover {
+  text-decoration: underline;
+}
+
+.markdown-body ul, 
+.markdown-body ol {
+  color: var(--text-primary);
+  padding-left: 2em;
+  margin-bottom: 1.2em;
+}
+
+.markdown-body li {
+  margin-bottom: 0.5em;
+}
+
+.markdown-body code {
+  background-color: var(--code-bg);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.9em;
+  color: var(--text-primary);
+}
+
+.markdown-body pre {
+  margin-bottom: 1.5em;
+  padding: 1em;
+  overflow: auto;
+  background-color: var(--code-bg);
+  border-radius: 6px;
+  position: relative;
+}
+
+.markdown-body pre > code {
+  background-color: transparent;
+  padding: 0;
+  font-size: 0.9em;
+  color: var(--text-primary);
+  display: block;
+}
+
+/* Add copy button for code blocks */
+.code-block-wrapper {
+  position: relative;
+  margin-bottom: 1.5em;
+}
+
+.copy-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px 8px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s, background-color 0.2s;
+  color: var(--text-secondary);
+}
+
+.code-block-wrapper:hover .copy-button {
+  opacity: 1;
+}
+
+.copy-button:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Purple community box */
+.community-box {
+  background-color: var(--purple-bg);
+  border-radius: 8px;
+  padding: 20px;
+  margin: 30px 0;
+  position: relative;
+  border-left: 4px solid var(--purple-text);
+}
+
+.community-box h3 {
+  color: var(--purple-text);
+  margin-top: 0;
+  font-size: 1.3em;
+}
+
+.community-box a {
+  color: var(--purple-text);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.community-box a:hover {
+  text-decoration: underline;
+}
+
+/* Light theme overrides to match Chai Docs exactly */
+.light-theme .markdown-renderer {
+  background-color: #ffffff;
+  color: #333333;
+  box-shadow: none;
+  padding: 0;
+}
+
+.light-theme .markdown-body h1 {
+  font-size: 2.5em;
+  color: #333333;
+  border-bottom: 1px solid #e6e6e6;
+  padding-bottom: 0.3em;
+  margin-bottom: 0.8em;
+  font-weight: 600;
+}
+
+.light-theme .markdown-body h2 {
+  font-size: 1.8em;
+  color: #333333;
+  border-bottom: 1px solid #e6e6e6;
+  padding-bottom: 0.3em;
+  margin-top: 1.5em;
+  margin-bottom: 0.8em;
+  font-weight: 600;
+}
+
+.light-theme .markdown-body h3 {
+  font-size: 1.4em;
+  color: #333333;
+  margin-top: 1.2em;
+  margin-bottom: 0.8em;
+  font-weight: 600;
+}
+
+.light-theme .markdown-body p {
+  color: #333333;
+  margin-bottom: 1em;
+  line-height: 1.6;
+}
+
+.light-theme .markdown-body ul,
+.light-theme .markdown-body ol {
+  color: #333333;
+  padding-left: 2em;
+  margin-bottom: 1em;
+}
+
+.light-theme .markdown-body li {
+  margin-bottom: 0.5em;
+}
+
+.light-theme .markdown-body code {
+  background-color: #f6f8fa;
+  color: #333333;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.9em;
+}
+
+.light-theme .markdown-body pre {
+  background-color: #f6f8fa;
+  margin-bottom: 1.5em;
+  padding: 1em;
+  border-radius: 6px;
+  overflow: auto;
+}
+
+/* Dark theme specific overrides */
+.dark-theme .markdown-renderer {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.dark-theme .markdown-body {
+  color: #e0e0e0;
+}
+
+.dark-theme .markdown-body h1,
+.dark-theme .markdown-body h2,
+.dark-theme .markdown-body h3,
+.dark-theme .markdown-body p,
+.dark-theme .markdown-body li {
+  color: #e0e0e0;
+}
+
+.dark-theme .markdown-body code {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+}
+
+.dark-theme .markdown-body pre {
+  background-color: #2d2d2d;
+}
+
+.dark-theme .markdown-body pre > code {
+  color: #e0e0e0;
+}
+
+/* Tables */
+.markdown-body table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 1.5em;
+}
+
+.markdown-body table th,
+.markdown-body table td {
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+}
+
+.markdown-body table th {
+  background-color: var(--bg-secondary);
+  font-weight: 600;
+}
+
+.light-theme .markdown-body table th {
+  background-color: #f5f5f5;
+}
+
+.dark-theme .markdown-body table th {
+  background-color: #2a2a2a;
+}
+
+/* Blockquotes */
+.markdown-body blockquote {
+  margin: 0 0 1.5em;
+  padding: 0 1em;
+  color: var(--text-secondary);
+  border-left: 4px solid var(--border-color);
+}
+
+/* Images */
+.markdown-body img {
+  max-width: 100%;
+  height: auto;
+  margin: 1em 0;
+  border-radius: 6px;
+}
+
+/* Horizontal rule */
+.markdown-body hr {
+  height: 1px;
+  background-color: var(--border-color);
+  border: none;
+  margin: 2em 0;
+}
+
+/* Smooth scrolling and offset for fixed headers */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Add padding to anchors to prevent content from being hidden under fixed header */
+.markdown-body h1[id],
+.markdown-body h2[id],
+.markdown-body h3[id] {
+  scroll-margin-top: 80px; /* Adjust this value based on your header's height */
+  position: relative;
+}
+
+/* Style for active anchor */
+.markdown-body h1[id]:target,
+.markdown-body h2[id]:target,
+.markdown-body h3[id]:target {
+  animation: highlight 2s ease;
+}
+
+@keyframes highlight {
+  from { background-color: rgba(255, 107, 0, 0.2); }
+  to { background-color: transparent; }
+}
+
+/* Table of contents links styling */
+.table-of-contents li a {
+  display: block;
+  padding: 5px 0;
+  cursor: pointer;
+}
+
+.table-of-contents li a:hover {
+  color: var(--accent-color);
+}
