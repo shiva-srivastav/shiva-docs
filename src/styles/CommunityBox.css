@@ -1,0 +1,28 @@
+/* src/styles/CommunityBox.css */
+.community-box {
+    background-color: var(--purple-bg);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .community-box-icon {
+    margin-bottom: 10px;
+    color: var(--purple-text);
+  }
+  
+  .community-box h3 {
+    color: var(--purple-text);
+    margin-bottom: 10px;
+    font-size: 1.3em;
+  }
+  
+  .community-box p {
+    margin-bottom: 10px;
+  }
+  
+  .community-box a {
+    color: var(--purple-text);
+    text-decoration: none;
+    font-weight: 500;
+  }

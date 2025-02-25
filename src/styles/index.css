@@ -1,13 +1,26 @@
 /* src/styles/index.css */
-body {
+* {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body, html {
+  height: 100%;
+  width: 100%;
+}
+
+/* Apply a light theme by default */
+:root {
+  color-scheme: light;
+}
+
+/* Dark theme overrides */
+.dark-theme {
+  color-scheme: dark;
+}
+
+/* Apply smooth transitions for theme changes */
+body, .sidebar, .markdown-renderer, .header, .footer, .table-of-contents {
+  transition: background-color 0.3s ease, color 0.3s ease;
 }

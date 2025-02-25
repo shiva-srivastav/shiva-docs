@@ -1,4 +1,4 @@
-// src/components/Header.js (updated again)
+// src/components/Header.js
 import React from 'react';
 import SearchBar from './SearchBar';
 import ThemeToggle from './ThemeToggle';

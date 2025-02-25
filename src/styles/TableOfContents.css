@@ -1,45 +1,84 @@
 /* src/styles/TableOfContents.css */
 .table-of-contents {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  }
-  
-  .table-of-contents h3 {
-    font-size: 18px;
-    margin-bottom: 15px;
-    color: #333;
-  }
-  
-  .table-of-contents ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .table-of-contents li {
-    margin-bottom: 8px;
-  }
-  
-  .table-of-contents a {
-    text-decoration: none;
-    color: #666;
-    transition: color 0.2s;
-  }
-  
-  .table-of-contents a:hover {
-    color: #ff6b00;
-  }
-  
-  .toc-level-1 {
-    font-weight: 600;
-  }
-  
-  .toc-level-2 {
-    padding-left: 12px;
-  }
-  
-  .toc-level-3 {
-    padding-left: 24px;
-    font-size: 0.9em;
-  }
+  background-color: var(--bg-content);
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.table-of-contents h3 {
+  font-size: 18px;
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: var(--text-primary);
+}
+
+.table-of-contents ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.table-of-contents li {
+  margin-bottom: 10px;
+}
+
+.table-of-contents a {
+  text-decoration: none;
+  color: var(--text-secondary);
+  display: block;
+  line-height: 1.4;
+  transition: color 0.2s;
+  font-size: 14px;
+}
+
+.table-of-contents a:hover {
+  color: var(--accent-color);
+}
+
+.toc-level-1 {
+  font-weight: 600;
+}
+
+.toc-level-2 {
+  padding-left: 12px;
+}
+
+.toc-level-3 {
+  padding-left: 24px;
+  font-size: 0.9em;
+}
+
+.toc-active {
+  color: var(--accent-color) !important;
+}
+
+/* Light theme overrides - exactly like Chai Docs */
+.light-theme .table-of-contents {
+  padding-left: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.light-theme .table-of-contents h3 {
+  color: #ff6b00; /* Chai Docs uses orange for the "On this page" title */
+  font-weight: 600;
+  font-size: 16px;
+  margin-top: 0;
+}
+
+.light-theme .table-of-contents a {
+  color: #666666;
+}
+
+.light-theme .table-of-contents a:hover {
+  color: #ff6b00;
+}
+
+/* Dark theme overrides */
+.dark-theme .table-of-contents {
+  background-color: #1a1a1a;
+}
+
+.dark-theme .table-of-contents h3 {
+  color: #ff8c33;
+}

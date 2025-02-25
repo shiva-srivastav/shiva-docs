@@ -1,73 +1,43 @@
 /* src/styles/ThemeToggle.css */
 .theme-toggle {
-    background: none;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.3s;
-  }
-  
-  .theme-toggle:hover {
-    background-color: #f0f0f0;
-  }
-  
-  /* Dark theme variables */
-  .dark-theme {
-    --bg-color: #1a1a1a;
-    --bg-secondary: #252525;
-    --text-color: #eee;
-    --text-secondary: #aaa;
-    --border-color: #444;
-    --highlight-color: #ff8c33;
-  }
-  
-  /* Light theme variables */
-  .light-theme {
-    --bg-color: #f8f9fa;
-    --bg-secondary: #ffffff;
-    --text-color: #333;
-    --text-secondary: #666;
-    --border-color: #ddd;
-    --highlight-color: #ff6b00;
-  }
-  
-  /* Apply theme variables to elements */
-  body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-  }
-  
-  .sidebar {
-    background-color: var(--bg-secondary);
-    color: var(--text-color);
-    border-right: 1px solid var(--border-color);
-  }
-  
-  .header {
-    background-color: var(--bg-secondary);
-    border-bottom: 1px solid var(--border-color);
-  }
-  
-  .markdown-renderer, 
-  .table-of-contents,
-  .card {
-    background-color: var(--bg-secondary);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  a {
-    color: var(--highlight-color);
-  }
-  
-  .search-input {
-    background-color: var(--bg-color);
-    border: 1px solid var(--border-color);
-    color: var(--text-color);
-  }
-  
-  .keyboard-shortcut {
-    background-color: var(--bg-color);
-    color: var(--text-secondary);
-  }
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.theme-toggle svg {
+  color: var(--text-secondary);
+}
+
+.theme-toggle:hover {
+  background-color: var(--bg-secondary);
+}
+
+/* Light theme specific styling */
+.light-theme .theme-toggle {
+  background-color: #ffffff;
+  border: 1px solid #e6e6e6;
+  color: #333333;
+}
+
+.light-theme .theme-toggle:hover {
+  background-color: #f5f5f5;
+}
+
+/* Dark theme specific styling */
+.dark-theme .theme-toggle {
+  background-color: #1a1a1a;
+  border: 1px solid #333333;
+  color: #e0e0e0;
+}
+
+.dark-theme .theme-toggle:hover {
+  background-color: #252525;
+}

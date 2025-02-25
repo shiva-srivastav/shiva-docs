@@ -1,4 +1,4 @@
-// src/components/MarkdownRenderer.js (updated)
+// src/components/MarkdownRenderer.js (update)
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';

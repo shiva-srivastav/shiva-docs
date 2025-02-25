@@ -1,4 +1,4 @@
-// src/components/PageContent.js (final version)
+// src/components/PageContent.js
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import MarkdownRenderer from './MarkdownRenderer';
@@ -56,11 +56,13 @@ const PageContent = () => {
   return (
     <div className="page-content">
       <Breadcrumbs />
-      <div className="content-main">
-        <MarkdownRenderer markdown={content} />
-      </div>
-      <div className="content-sidebar">
-        <TableOfContents headings={headings} />
+      <div className="content-wrapper">
+        <div className="content-main">
+          <MarkdownRenderer markdown={content} />
+        </div>
+        <div className="content-sidebar">
+          <TableOfContents headings={headings} />
+        </div>
       </div>
     </div>
   );

@@ -1,47 +1,60 @@
 /* src/styles/Breadcrumbs.css */
 .breadcrumbs {
-    margin-bottom: 20px;
-    font-size: 14px;
-    color: #666;
-  }
-  
-  .breadcrumbs a {
-    color: #666;
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  
-  .breadcrumbs a:hover {
-    color: #ff6b00;
-  }
-  
-  .separator {
-    margin: 0 8px;
-    color: #ccc;
-  }
-  
-  .current {
-    color: #333;
-    font-weight: 500;
-  }
-  
-  /* Dark theme compatibility */
-  .dark-theme .breadcrumbs {
-    color: #aaa;
-  }
-  
-  .dark-theme .breadcrumbs a {
-    color: #aaa;
-  }
-  
-  .dark-theme .breadcrumbs a:hover {
-    color: #ff8c33;
-  }
-  
-  .dark-theme .separator {
-    color: #666;
-  }
-  
-  .dark-theme .current {
-    color: #eee;
-  }
+  margin-bottom: 20px;
+  padding: 5px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.breadcrumbs a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.breadcrumbs a:hover {
+  color: var(--accent-color);
+}
+
+.separator {
+  margin: 0 8px;
+  color: var(--text-muted);
+}
+
+.current {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Light theme overrides */
+.light-theme .breadcrumbs {
+  color: #888888;
+}
+
+.light-theme .breadcrumbs a {
+  color: #888888;
+}
+
+.light-theme .breadcrumbs a:hover {
+  color: #ff6b00;
+}
+
+.light-theme .current {
+  color: #333333;
+}
+
+/* Dark theme overrides */
+.dark-theme .breadcrumbs {
+  color: #888888;
+}
+
+.dark-theme .breadcrumbs a {
+  color: #888888;
+}
+
+.dark-theme .current {
+  color: #e0e0e0;
+}

@@ -1,17 +1,55 @@
-
-
-
 /* src/styles/App.css */
+:root {
+  /* Light theme exactly like Chai Docs */
+  --bg-primary: #ffffff;
+  --bg-secondary: #ffffff;
+  --bg-content: #ffffff;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-muted: #888888;
+  --border-color: #e6e6e6;
+  --accent-color: #ff6b00;
+  --accent-hover: #ff8c33;
+  --header-bg: #ffffff;
+  --sidebar-bg: #ffffff;
+  --code-bg: #f6f8fa;
+  --purple-bg: #f3e8ff;
+  --purple-text: #7e22ce;
+  --shadow-color: rgba(0, 0, 0, 0.05);
+  --border-radius: 8px;
+}
+
+.dark-theme {
+  /* Dark theme */
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --bg-content: #121212;
+  --text-primary: #e0e0e0;
+  --text-secondary: #b0b0b0;
+  --text-muted: #888888;
+  --border-color: #333333;
+  --accent-color: #ff8c33;
+  --accent-hover: #ffa64d;
+  --header-bg: #121212;
+  --sidebar-bg: #1a1a1a;
+  --code-bg: #2d2d2d;
+  --purple-bg: #3b2564;
+  --purple-text: #d8b4fe;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 body {
+  margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  background-color: #f8f9fa;
-  color: #333;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  line-height: 1.6;
 }
 
 .app {
@@ -23,16 +61,140 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
+  background-color: var(--bg-secondary);
 }
 
 .content-container {
-  padding: 20px;
+  padding: 20px 40px;
   flex: 1;
-  display: flex;
+  background-color: var(--bg-secondary);
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
 }
 
+/* Link styles */
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+/* Button styles */
+button {
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-content);
+  color: var(--text-primary);
+  border-radius: 4px;
+  font-size: 14px;
+  padding: 8px 16px;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  background-color: var(--bg-secondary);
+}
+
+/* Transitions for theme changes */
+body, .sidebar, .header, .markdown-renderer, .table-of-contents, .search-bar, button, a, input {
+  transition: 
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* Responsive design */
 @media (max-width: 768px) {
   .app {
     flex-direction: column;
   }
+  
+  .sidebar {
+    width: 100% !important;
+    height: auto;
+    position: static;
+  }
+  
+  .content-container {
+    padding: 15px;
+  }
+}
+
+/* Utility classes */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Light theme explicit overrides */
+.light-theme body,
+.light-theme .main-content,
+.light-theme .content-container,
+.light-theme .markdown-renderer {
+  background-color: #ffffff;
+}
+
+/* Dark theme explicit overrides */
+.dark-theme body {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.dark-theme .main-content {
+  background-color: #121212;
+}
+
+.dark-theme .content-container {
+  background-color: #121212;
 }
