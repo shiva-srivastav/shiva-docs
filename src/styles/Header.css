@@ -3,12 +3,18 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 0.75rem 1.5rem;
   background-color: var(--header-bg);
   border-bottom: 1px solid var(--border-color);
   position: sticky;
   top: 0;
-  z-index: 5;
+  z-index: 100;
+}
+
+.search-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
 }
 
 .search-container {
@@ -16,25 +22,95 @@
   width: 300px;
 }
 
-.github-link {
-  color: var(--text-primary);
-  margin-right: 15px;
-}
-
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 1rem;
 }
 
-/* Light theme overrides */
+.auth-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-link, .login-link {
+  color: var(--text-primary);
+  text-decoration: none;
+  padding: 0.375rem 0.75rem;
+  border-radius: 4px;
+  transition: background-color 0.2s, color 0.2s;
+  font-size: 0.875rem;
+}
+
+.admin-link:hover, .login-link:hover {
+  background-color: rgba(128, 128, 128, 0.1);
+  color: var(--accent-color);
+}
+
+.logout-button {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.375rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+}
+
+.logout-button:hover {
+  background-color: rgba(255, 0, 0, 0.1);
+  border-color: rgba(255, 0, 0, 0.3);
+  color: #ff4d4d;
+}
+
+/* Light theme specific styling */
 .light-theme .header {
   background-color: #ffffff;
   border-bottom: 1px solid #eaeaea;
 }
 
-/* Dark theme overrides */
+.light-theme .admin-link, 
+.light-theme .login-link {
+  color: #333333;
+}
+
+.light-theme .logout-button {
+  border-color: #e6e6e6;
+  color: #333333;
+}
+
+/* Dark theme specific styling */
 .dark-theme .header {
   background-color: #1a1a1a;
   border-bottom: 1px solid #333333;
+}
+
+.dark-theme .admin-link, 
+.dark-theme .login-link {
+  color: #e0e0e0;
+}
+
+.dark-theme .logout-button {
+  border-color: #333333;
+  color: #e0e0e0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .header {
+    padding: 0.75rem 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .search-section {
+    width: 100%;
+    order: 2;
+    margin: 0.5rem 0;
+  }
+  
+  .header-actions {
+    gap: 0.5rem;
+  }
 }

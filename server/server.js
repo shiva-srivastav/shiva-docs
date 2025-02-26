@@ -6,10 +6,18 @@ const path = require('path');
 const MarkdownIt = require('markdown-it');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 const app = express();
 const port = process.env.PORT || 5000;
 const md = new MarkdownIt();
+
+// Authentication constants
+const JWT_SECRET = 'shiva-docs-jwt-secret-key';
+const ADMIN_USERNAME = 'admin';
+// This is a bcrypt hash for 'shiva#docs#telusko'
+const ADMIN_PASSWORD_HASH = '$2b$10$NGFzLzwQjVigPG9.sQ2Pm.x.oGcyrlK7.S4ukVYbb3xXtGvuXLND6';
 
 // Middleware
 app.use(cors());
@@ -17,6 +25,29 @@ app.use(express.json());
 
 // Content directory path
 const contentDir = path.join(__dirname, 'content');
+
+// Authentication middleware to protect routes
+const authenticateToken = (req, res, next) => {
+  console.log('Authenticating request to:', req.originalUrl);
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  
+  if (!token) {
+    console.log('No token provided');
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+  
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) {
+      console.log('Token verification failed:', err.message);
+      return res.status(403).json({ error: 'Invalid or expired token' });
+    }
+    
+    console.log('Token verified successfully for user:', user.username);
+    req.user = user;
+    next();
+  });
+};
 
 // Configure multer for image uploads
 const storage = multer.diskStorage({
@@ -41,6 +72,68 @@ const upload = multer({
       cb(new Error('Only image files are allowed'));
     }
   }
+});
+
+// Login route with improved logging
+app.post('/api/login', async (req, res) => {
+  try {
+    console.log('Login attempt received');
+    const { username, password } = req.body;
+    
+    console.log('Login attempt for username:', username);
+    
+    // Validate input
+    if (!username || !password) {
+      console.log('Missing username or password');
+      return res.status(400).json({ error: 'Username and password are required' });
+    }
+    
+    // Check username (case insensitive)
+    if (username.toLowerCase() !== ADMIN_USERNAME.toLowerCase()) {
+      console.log('Username incorrect');
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
+    console.log('Username correct, checking password');
+    
+    // Check password
+    const passwordMatch = await bcrypt.compare(password, ADMIN_PASSWORD_HASH);
+    console.log('Password comparison result:', passwordMatch);
+    
+    if (!passwordMatch) {
+      console.log('Password incorrect');
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
+    // Generate JWT token
+    const token = jwt.sign(
+      { username: ADMIN_USERNAME },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+    
+    console.log('Login successful, token generated');
+    
+    // Return the token
+    res.json({ 
+      token,
+      user: { username: ADMIN_USERNAME }
+    });
+    
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Verify token route
+app.get('/api/verify-token', authenticateToken, (req, res) => {
+  res.json({ valid: true, user: req.user });
+});
+
+// Test route to verify server is working
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'Server is working correctly' });
 });
 
 // Route to get all available categories
@@ -103,6 +196,9 @@ app.get('/api/content/:category/:slug', async (req, res) => {
     res.status(500).json({ error: 'Failed to get content' });
   }
 });
+
+// Apply authentication to all admin routes
+app.use('/api/admin/*', authenticateToken);
 
 // Create a new category
 app.post('/api/admin/categories', async (req, res) => {
@@ -296,5 +392,6 @@ async function initializeContentDirectories() {
 initializeContentDirectories().then(() => {
   app.listen(port, () => {
     console.log(`Server running on port ${port}`);
+    console.log(`Authentication enabled with username: ${ADMIN_USERNAME}`);
   });
 });

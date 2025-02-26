@@ -1,53 +1,79 @@
 /* src/styles/CodeBlock.css */
 .code-block-wrapper {
-    position: relative;
-    margin-bottom: 1.5em;
-  }
-  
+  position: relative;
+  margin-bottom: 1.5em;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.code-block-wrapper pre {
+  margin: 0 !important;
+  overflow-x: auto;
+  padding-top: 1.5em !important; /* Extra space for copy button */
+}
+
+.copy-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  z-index: 10;
+  opacity: 0;
+  background-color: rgba(0, 0, 0, 0.1);
+  color: var(--text-secondary);
+}
+
+.code-block-wrapper:hover .copy-button {
+  opacity: 1;
+}
+
+.copy-button:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.copy-button.copied {
+  background-color: #10b981 !important; /* Green for success */
+  color: white !important;
+}
+
+/* Light theme specific styling */
+.light-theme .copy-button {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #666666;
+}
+
+.light-theme .copy-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Dark theme specific styling */
+.dark-theme .copy-button {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #b0b0b0;
+}
+
+.dark-theme .copy-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Ensure code blocks are responsive */
+@media (max-width: 768px) {
   .code-block-wrapper pre {
-    margin: 0 !important;
-    overflow-x: auto;
+    font-size: 14px;
   }
   
   .copy-button {
-    position: absolute;
-    top: 8px;
-    right: 8px;
+    /* Always visible on mobile for easier access */
+    opacity: 0.8;
     padding: 4px 8px;
-    background-color: rgba(0, 0, 0, 0.1);
-    border: none;
-    border-radius: 4px;
-    font-size: 12px;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.2s, background-color 0.2s;
-    color: var(--text-secondary);
+    font-size: 11px;
   }
-  
-  .code-block-wrapper:hover .copy-button {
-    opacity: 1;
-  }
-  
-  .copy-button:hover {
-    background-color: rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Light theme specific styling */
-  .light-theme .copy-button {
-    background-color: rgba(0, 0, 0, 0.1);
-    color: #666666;
-  }
-  
-  .light-theme .copy-button:hover {
-    background-color: rgba(0, 0, 0, 0.15);
-  }
-  
-  /* Dark theme specific styling */
-  .dark-theme .copy-button {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #b0b0b0;
-  }
-  
-  .dark-theme .copy-button:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-  }
+}

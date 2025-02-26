@@ -15,7 +15,7 @@ const Footer = () => {
           <a href="/about">About</a>
           <a href="/contact">Contact</a>
           <a href="/privacy">Privacy</a>
-          <a href="https://github.com/yourusername/shiva-docs" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://github.com/shiva-srivastav" target="_blank" rel="noopener noreferrer">GitHub</a>
         </div>
         <div className="footer-copyright">
           © {currentYear} Shiva Docs. All rights reserved.

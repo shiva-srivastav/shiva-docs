@@ -1,5 +1,6 @@
 // src/context/ContentContext.js
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import { useAuth } from './AuthContext';
 
 // API URL - adjust if needed
 const API_URL = 'http://localhost:5000/api';
@@ -12,6 +13,11 @@ export const ContentProvider = ({ children }) => {
   const [sidebarData, setSidebarData] = useState([]);
   const [contentMap, setContentMap] = useState({});
   const [loading, setLoading] = useState(true);
+  
+  // Get auth headers from AuthContext
+  // Always call the hook, but handle the case where it might not be available yet
+  const auth = useAuth();
+  const getAuthHeader = auth ? auth.getAuthHeader : () => ({});
   
   // Load content structure from server
   useEffect(() => {
@@ -80,11 +86,12 @@ export const ContentProvider = ({ children }) => {
     const { category, title, slug, content } = newContentData;
     
     try {
-      // Send the content to the server
+      // Send the content to the server with auth headers
       const response = await fetch(`${API_URL}/admin/content/${category}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...getAuthHeader()  // Add auth headers
         },
         body: JSON.stringify({ title, slug, content }),
       });
@@ -158,6 +165,7 @@ export const ContentProvider = ({ children }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...getAuthHeader()  // Add auth headers
         },
         body: JSON.stringify({ name }),
       });
@@ -190,6 +198,9 @@ export const ContentProvider = ({ children }) => {
     try {
       const response = await fetch(`${API_URL}/admin/content/${category}/${slug}`, {
         method: 'DELETE',
+        headers: {
+          ...getAuthHeader()  // Add auth headers
+        }
       });
       
       if (!response.ok) {
@@ -233,6 +244,9 @@ export const ContentProvider = ({ children }) => {
     try {
       const response = await fetch(`${API_URL}/admin/categories/${category}`, {
         method: 'DELETE',
+        headers: {
+          ...getAuthHeader()  // Add auth headers
+        }
       });
       
       if (!response.ok) {
