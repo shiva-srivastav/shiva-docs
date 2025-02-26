@@ -39,6 +39,7 @@
     border-color: var(--accent-color);
     background-color: var(--bg-secondary);
     transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
   .nav-arrow {
@@ -94,14 +95,31 @@
     color: #ff8c33;
   }
   
-  /* Responsive adjustments */
+  /* Mobile responsive styling */
   @media (max-width: 768px) {
     .navigation-links {
       flex-direction: column;
+      gap: 12px;
     }
     
     .prev-link, 
     .next-link {
       max-width: 100%;
+      padding: 15px;
+      margin-right: 0;
+      margin-left: 0;
+    }
+    
+    .nav-direction {
+      font-size: 12px;
+    }
+    
+    .nav-title {
+      font-size: 14px;
+    }
+    
+    .nav-arrow {
+      font-size: 16px;
+      padding: 0 5px;
     }
   }

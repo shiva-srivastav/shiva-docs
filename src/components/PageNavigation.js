@@ -4,6 +4,10 @@ import { Link } from 'react-router-dom';
 import '../styles/PageNavigation.css';
 
 const PageNavigation = ({ prevPage, nextPage }) => {
+  if (!prevPage && !nextPage) {
+    return null;
+  }
+  
   return (
     <div className="page-navigation">
       <div className="navigation-links">
