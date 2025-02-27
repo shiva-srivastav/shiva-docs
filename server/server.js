@@ -8,16 +8,16 @@ const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 5000;
 const md = new MarkdownIt();
 
-// Authentication constants
-const JWT_SECRET = 'shiva-docs-jwt-secret-key';
-const ADMIN_USERNAME = 'admin';
-// This is a bcrypt hash for 'shiva#docs#telusko'
-const ADMIN_PASSWORD_HASH = '$2b$10$NGFzLzwQjVigPG9.sQ2Pm.x.oGcyrlK7.S4ukVYbb3xXtGvuXLND6';
+// Then replace hardcoded values with environment variables
+const JWT_SECRET = process.env.JWT_SECRET;
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
 
 // Middleware
 app.use(cors());
