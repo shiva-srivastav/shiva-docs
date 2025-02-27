@@ -1,7 +1,7 @@
 // src/context/AuthContext.js
 import React, { createContext, useState, useEffect, useContext } from 'react';
 
-// API URL - make sure this matches your server
+// API URL - adjust if needed
 const API_URL = 'http://localhost:5000/api';
 
 // Create the auth context
@@ -17,17 +17,14 @@ export const AuthProvider = ({ children }) => {
   // Check for token on mount
   useEffect(() => {
     const checkAuth = async () => {
-      console.log('Checking authentication on startup...');
       const token = localStorage.getItem('authToken');
       
       if (!token) {
-        console.log('No token found in localStorage');
         setLoading(false);
         return;
       }
       
       try {
-        console.log('Token found, validating with server...');
         // Validate token with the server
         const response = await fetch(`${API_URL}/verify-token`, {
           headers: {
@@ -37,11 +34,9 @@ export const AuthProvider = ({ children }) => {
         
         if (response.ok) {
           const data = await response.json();
-          console.log('Token validated successfully:', data);
           setUser(data.user);
           setIsAuthenticated(true);
         } else {
-          console.log('Token validation failed on server');
           // Token invalid or expired
           localStorage.removeItem('authToken');
         }
@@ -58,7 +53,6 @@ export const AuthProvider = ({ children }) => {
 
   // Login function
   const login = async (username, password) => {
-    console.log('Attempting login for:', username);
     setLoading(true);
     setError(null);
     
@@ -74,11 +68,9 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
       
       if (!response.ok) {
-        console.log('Login failed:', data.error);
         throw new Error(data.error || 'Login failed');
       }
       
-      console.log('Login successful, storing token');
       // Store token in localStorage
       localStorage.setItem('authToken', data.token);
       
@@ -98,7 +90,6 @@ export const AuthProvider = ({ children }) => {
 
   // Logout function
   const logout = () => {
-    console.log('Logging out');
     localStorage.removeItem('authToken');
     setUser(null);
     setIsAuthenticated(false);
@@ -111,7 +102,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Context value
-  const value = {
+  const contextValue = {
     user,
     isAuthenticated,
     loading,
@@ -122,7 +113,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );

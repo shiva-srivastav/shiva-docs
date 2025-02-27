@@ -100,7 +100,7 @@ const Login = () => {
               placeholder="Enter password"
               required
             />
-            <div className="password-hint">Default: shiva#docs#telusko</div>
+            {/* <div className="password-hint">Default: shiva#docs#telusko</div> */}
           </div>
           
           <button 

@@ -25,7 +25,7 @@
      ```bash
      git --version
      ```
-![Git](images/03_git_2.png)
+![Git](http://localhost:5000/content/images/75afa3d5-5e3f-408f-854a-17364c52c6c2.png)
 
 
 #### Step 3: Configure Git for the First Time
@@ -84,7 +84,7 @@ If you’re using Git with HTTPS and need to change your stored credentials:
    - Select **Add a Windows Credential**.
    - Enter your Git server URL (e.g., `https://github.com`), username, and password.
 
-![Manage Credential](images/03_manage_credential_1.png)
+![Manage Credential](../images/77cc84df-3083-4beb-b10e-9941a1723429.png)
 
 #### Step 6: Test New Credentials
 1. **Clone a Repository**:

@@ -1,12 +1,98 @@
-// src/components/ImageUploader.js
-import React, { useState } from 'react';
-import '../styles/ImageUploader.css';
+import React, { useState, useEffect, createContext, useContext } from 'react';
+
+// API URL - make sure this matches your server
+const API_URL = 'http://localhost:5000/api';
+
+// Authentication Context
+const AuthContext = createContext();
+
+// Authentication Provider
+const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [token, setToken] = useState(localStorage.getItem('authToken'));
+
+  // Login function
+  const login = async (username, password) => {
+    try {
+      const response = await fetch(`${API_URL}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Login failed');
+      }
+      
+      localStorage.setItem('authToken', data.token);
+      setToken(data.token);
+      setUser(data.user);
+      setIsAuthenticated(true);
+      
+      return true;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
+    }
+  };
+
+  // Logout function
+  const logout = () => {
+    localStorage.removeItem('authToken');
+    setToken(null);
+    setUser(null);
+    setIsAuthenticated(false);
+  };
+
+  // Get auth header (for API requests)
+  const getAuthHeader = () => {
+    const currentToken = token || localStorage.getItem('authToken');
+    
+    if (!currentToken) {
+      console.warn('No token available');
+      return {};
+    }
+    
+    return { 
+      'Authorization': `Bearer ${currentToken}`
+    };
+  };
+
+  const value = {
+    user,
+    isAuthenticated,
+    login,
+    logout,
+    getAuthHeader
+  };
+
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+// Custom hook to use the auth context
+const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
 
 const ImageUploader = ({ onImageUploaded }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [images, setImages] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState('');
+  const { getAuthHeader } = useAuth();
   
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -75,35 +161,71 @@ const ImageUploader = ({ onImageUploaded }) => {
     setMessage('');
     
     try {
-      // In a real application, you would upload the images to your server
-      // For this demo, we'll simulate the upload with a timeout
+      // Get the token from authentication context
+      const authHeaders = getAuthHeader();
       
-      setTimeout(() => {
-        // Mark all images as uploaded
-        setImages(prev => prev.map(img => ({
-          ...img,
-          uploaded: true
-        })));
-        
-        // Notify the parent component
-        if (onImageUploaded) {
-          const uploadedImages = images.map(img => ({
-            name: img.name,
-            url: `/content/images/${img.name}`,
-            size: img.size
-          }));
+      // Create upload promises for non-uploaded images
+      const uploadPromises = images
+        .filter(img => !img.uploaded)
+        .map(async (img) => {
+          const formData = new FormData();
+          formData.append('image', img.file);
           
-          onImageUploaded(uploadedImages);
-        }
+          const response = await fetch(`${API_URL}/admin/images`, {
+            method: 'POST',
+            headers: {
+              ...authHeaders  // Spread the auth headers
+            },
+            body: formData
+          });
+          
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Upload failed');
+          }
+          
+          return response.json();
+        });
+      
+      // Wait for all uploads to complete
+      const results = await Promise.all(uploadPromises);
+      
+      // Mark images as uploaded
+      setImages(prev => prev.map(img => ({
+        ...img,
+        uploaded: true
+      })));
+      
+      // Notify parent component
+      if (onImageUploaded) {
+        const uploadedImages = results.map(result => ({
+          name: result.name,
+          url: result.url,
+          size: result.size
+        }));
         
-        setMessage('Images uploaded successfully!');
-        setUploading(false);
-      }, 1500);
+        onImageUploaded(uploadedImages);
+      }
+      
+      setMessage('Images uploaded successfully!');
+      setUploading(false);
     } catch (error) {
+      console.error('Upload error:', error);
       setMessage(`Error uploading images: ${error.message}`);
       setUploading(false);
     }
   };
+  
+  // Cleanup preview URLs when component unmounts
+  useEffect(() => {
+    return () => {
+      images.forEach(img => {
+        if (img.preview) {
+          URL.revokeObjectURL(img.preview);
+        }
+      });
+    };
+  }, [images]);
   
   return (
     <div className="image-uploader">
@@ -184,6 +306,15 @@ const ImageUploader = ({ onImageUploaded }) => {
         <pre>![Alt text](/content/images/your-image.png)</pre>
       </div>
     </div>
+  );
+};
+
+// Wrapper Component
+const FullImageUploader = ({ onImageUploaded }) => {
+  return (
+    <AuthProvider>
+      <ImageUploader onImageUploaded={onImageUploaded} />
+    </AuthProvider>
   );
 };
 

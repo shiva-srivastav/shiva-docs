@@ -1,5 +1,5 @@
 // src/components/AdminPanel.js
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useContent } from '../context/ContentContext';
 import '../styles/AdminPanel.css';
 
@@ -10,8 +10,7 @@ const AdminPanel = () => {
     createCategory, 
     deleteContent, 
     deleteCategory, 
-    refreshContent,
-    loading
+    refreshContent 
   } = useContent();
   
   // State for category creation
@@ -40,30 +39,18 @@ const AdminPanel = () => {
   const fileInputRef = useRef(null);
   const imageInputRef = useRef(null);
   
-  // Fetch images on component mount
+  // Load images when component mounts
   useEffect(() => {
-    fetchImages();
-  }, []);
-  
-  // Fetch existing images
-  const fetchImages = async () => {
-    try {
-      const API_URL = 'http://localhost:5000/api';
-      const response = await fetch(`${API_URL}/admin/images`);
-      
-      if (response.ok) {
-        const data = await response.json();
-        if (data.images && Array.isArray(data.images)) {
-          setUploadedImages(data.images);
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching images:', error);
-      setImageMessage({
-        text: 'Failed to load existing images',
-        type: 'error'
-      });
+    if (activeTab === 'images') {
+      loadImages();
     }
+  }, [activeTab]);
+  
+  // Format file size in a human-readable way
+  const formatFileSize = (bytes) => {
+    if (bytes < 1024) return bytes + ' B';
+    else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    else return (bytes / 1048576).toFixed(1) + ' MB';
   };
   
   // Handle creating a new category
@@ -87,21 +74,6 @@ const AdminPanel = () => {
     }
   };
   
-  // Handle deleting a category
-  const handleDeleteCategory = async (category, categoryName) => {
-    if (!window.confirm(`Are you sure you want to delete the "${categoryName}" category? This will delete all content in this category and cannot be undone.`)) {
-      return;
-    }
-    
-    const success = await deleteCategory(category);
-    
-    if (success) {
-      setCategoryMessage({ text: `Category "${categoryName}" deleted successfully`, type: 'success' });
-    } else {
-      setCategoryMessage({ text: `Failed to delete category "${categoryName}"`, type: 'error' });
-    }
-  };
-  
   // Handle adding/updating content
   const handleAddContent = async (e) => {
     e.preventDefault();
@@ -122,6 +94,12 @@ const AdminPanel = () => {
     
     if (success) {
       setContentMessage({ text: `Content "${title}" saved successfully`, type: 'success' });
+      
+      // Optional: reset form fields
+      // setTitle('');
+      // setSlug('');
+      // setMarkdownContent('');
+      // setUploadedFile(null);
     } else {
       setContentMessage({ text: 'Failed to save content', type: 'error' });
     }
@@ -179,6 +157,30 @@ const AdminPanel = () => {
     reader.readAsText(file);
   };
   
+  // Load images
+  const loadImages = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) return;
+      
+      const API_URL = 'http://localhost:5000/api';
+      const response = await fetch(`${API_URL}/admin/images`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.images && Array.isArray(data.images)) {
+          setUploadedImages(data.images);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading images:', error);
+    }
+  };
+  
   // Handle image upload
   const handleImageUpload = async (e) => {
     const files = e.target.files;
@@ -187,7 +189,7 @@ const AdminPanel = () => {
     setUploadingImage(true);
     setImageMessage({ text: 'Uploading images...', type: 'info' });
     
-    const newImages = [];
+    const uploadedFiles = [];
     const API_URL = 'http://localhost:5000/api';
     
     try {
@@ -198,34 +200,44 @@ const AdminPanel = () => {
           continue;
         }
         
+        const token = localStorage.getItem('authToken');
+        
+        if (!token) {
+          setImageMessage({ 
+            text: 'Authentication required. Please log in.', 
+            type: 'error' 
+          });
+          setUploadingImage(false);
+          return;
+        }
+        
         const formData = new FormData();
         formData.append('image', file);
         
         const response = await fetch(`${API_URL}/admin/images`, {
           method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`  // Add authentication header
+          },
           body: formData
         });
-        
+
         if (response.ok) {
           const data = await response.json();
-          newImages.push({
-            name: data.name,
+          uploadedFiles.push({
+            name: file.name,
             url: data.url,
-            size: data.size,
-            created: new Date().toISOString()
+            size: file.size
           });
         }
       }
       
-      if (newImages.length > 0) {
-        setUploadedImages(prev => [...prev, ...newImages]);
+      if (uploadedFiles.length > 0) {
+        setUploadedImages([...uploadedImages, ...uploadedFiles]);
         setImageMessage({ 
-          text: `Successfully uploaded ${newImages.length} image(s)`, 
+          text: `Successfully uploaded ${uploadedFiles.length} image(s)`, 
           type: 'success' 
         });
-        
-        // Clear the file input
-        imageInputRef.current.value = '';
       } else {
         setImageMessage({ 
           text: 'No images were uploaded', 
@@ -240,56 +252,78 @@ const AdminPanel = () => {
       });
     } finally {
       setUploadingImage(false);
+      // Clear the file input so the same file can be selected again
+      if (imageInputRef.current) {
+        imageInputRef.current.value = "";
+      }
     }
   };
   
-  // Handle image deletion
-  const handleDeleteImage = async (imageName) => {
-    if (!window.confirm(`Are you sure you want to delete this image? This action cannot be undone.`)) {
-      return;
-    }
-    
-    try {
-      const API_URL = 'http://localhost:5000/api';
-      const response = await fetch(`${API_URL}/admin/images/${imageName}`, {
-        method: 'DELETE'
-      });
-      
-      if (response.ok) {
-        setUploadedImages(prev => prev.filter(img => img.name !== imageName));
-        setImageMessage({
-          text: 'Image deleted successfully',
-          type: 'success'
-        });
-      } else {
-        setImageMessage({
-          text: 'Failed to delete image',
-          type: 'error'
-        });
-      }
-    } catch (error) {
-      console.error('Error deleting image:', error);
-      setImageMessage({
-        text: 'Failed to delete image',
-        type: 'error'
-      });
-    }
+  // Copy image URL or filename to clipboard
+  const copyImageUrl = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setImageMessage({ text: 'Copied to clipboard', type: 'success' });
+      setTimeout(() => setImageMessage({ text: '', type: '' }), 3000);
+    });
   };
   
   // Insert image URL into markdown content
-  const insertImageUrl = (imageUrl) => {
-    const imageMarkdown = `![Image](${imageUrl})`;
+  const insertImageMarkdown = (filename) => {
+    const imageMarkdown = `![Image description](${filename})`;
     
     // Insert at cursor position or at the end
-    setMarkdownContent(prevContent => prevContent ? `${prevContent}\n\n${imageMarkdown}` : imageMarkdown);
+    setMarkdownContent(prevContent => {
+      if (!prevContent) return imageMarkdown;
+      
+      // If we're in the content tab, insert at current position
+      if (activeTab === 'content') {
+        const textarea = document.getElementById('content');
+        if (textarea) {
+          const cursorPos = textarea.selectionStart;
+          return prevContent.substring(0, cursorPos) + 
+                 '\n\n' + imageMarkdown + '\n\n' + 
+                 prevContent.substring(cursorPos);
+        }
+      }
+      
+      // Otherwise, append to the end
+      return prevContent + '\n\n' + imageMarkdown;
+    });
+    
+    // Switch to content tab to show the inserted image code
+    setActiveTab('content');
+    
+    setImageMessage({ text: 'Image markdown inserted in editor', type: 'success' });
   };
   
-  // Copy image URL to clipboard
-  const copyImageUrl = (imageUrl) => {
-    navigator.clipboard.writeText(imageUrl).then(() => {
-      setImageMessage({ text: 'Image URL copied to clipboard', type: 'success' });
-      setTimeout(() => setImageMessage({ text: '', type: '' }), 3000);
-    });
+  // Delete an image
+  const deleteImage = async (filename) => {
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) return false;
+      
+      const API_URL = 'http://localhost:5000/api';
+      const response = await fetch(`${API_URL}/admin/images/${filename}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        // Remove the image from the list
+        setUploadedImages(images => images.filter(img => !img.url.includes(filename)));
+        setImageMessage({ text: 'Image deleted successfully', type: 'success' });
+        return true;
+      } else {
+        setImageMessage({ text: 'Failed to delete image', type: 'error' });
+        return false;
+      }
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      setImageMessage({ text: 'Error deleting image', type: 'error' });
+      return false;
+    }
   };
   
   // Refresh all content from server
@@ -297,10 +331,6 @@ const AdminPanel = () => {
     await refreshContent();
     setContentMessage({ text: 'Content refreshed from server', type: 'success' });
   };
-  
-  if (loading) {
-    return <div className="loading-message">Loading content structure...</div>;
-  }
   
   return (
     <div className="admin-panel">
@@ -445,7 +475,7 @@ Write your markdown content here..."
               <li><code>*italic*</code> or <code>_italic_</code> - <em>Italic text</em></li>
               <li><code>**bold**</code> or <code>__bold__</code> - <strong>Bold text</strong></li>
               <li><code>[Link text](URL)</code> - <a href="#">Link</a></li>
-              <li><code>![Alt text](image-url)</code> - Image</li>
+              <li><code>![Alt text](image-filename.jpg)</code> - Image</li>
               <li><code>```language
   code block
 ```</code> - Code block with syntax highlighting</li>
@@ -503,7 +533,22 @@ Write your markdown content here..."
                     </div>
                     <button 
                       className="delete-button"
-                      onClick={() => handleDeleteCategory(category.slug, category.name)}
+                      onClick={async () => {
+                        if (window.confirm(`Are you sure you want to delete the "${category.name}" category and all its content?`)) {
+                          const success = await deleteCategory(category.slug);
+                          if (success) {
+                            setCategoryMessage({ 
+                              text: `Category "${category.name}" deleted successfully`, 
+                              type: 'success' 
+                            });
+                          } else {
+                            setCategoryMessage({ 
+                              text: `Failed to delete category "${category.name}"`, 
+                              type: 'error' 
+                            });
+                          }
+                        }
+                      }}
                     >
                       Delete
                     </button>
@@ -560,6 +605,15 @@ Write your markdown content here..."
                 </span>
               </div>
             </div>
+            
+            <button 
+              type="button" 
+              className="refresh-button"
+              onClick={loadImages}
+              disabled={uploadingImage}
+            >
+              Refresh Image List
+            </button>
           </div>
           
           <div className="uploaded-images">
@@ -568,44 +622,65 @@ Write your markdown content here..."
               <p>No images uploaded yet.</p>
             ) : (
               <div className="image-grid">
-                {uploadedImages.map((image, index) => (
-                  <div key={index} className="image-item">
-                    <div className="image-preview">
-                      <img src={image.url} alt={image.name} />
-                    </div>
-                    <div className="image-details">
-                      <div className="image-name">{image.name}</div>
-                      <div className="image-actions">
-                        <button
-                          className="copy-button"
-                          onClick={() => copyImageUrl(image.url)}
-                        >
-                          Copy URL
-                        </button>
-                        <button
-                          className="insert-button"
-                          onClick={() => insertImageUrl(image.url)}
-                        >
-                          Insert
-                        </button>
-                        <button
-                          className="delete-button small"
-                          onClick={() => handleDeleteImage(image.name)}
-                        >
-                          Delete
-                        </button>
+                {uploadedImages.map((image, index) => {
+                  // Extract just the filename from the full path
+                  const filename = image.url.split('/').pop();
+                  
+                  return (
+                    <div key={index} className="image-item">
+                      <div className="image-preview">
+                        <img src={image.url} alt={image.name || filename} />
+                      </div>
+                      <div className="image-details">
+                        <div className="image-name" title={filename}>{filename}</div>
+                        <div className="image-size">{formatFileSize(image.size)}</div>
+                        <div className="image-actions">
+                          <button
+                            className="copy-button"
+                            onClick={() => copyImageUrl(filename)}
+                            title="Copy just the filename for markdown use"
+                          >
+                            Copy Name
+                          </button>
+                          <button
+                            className="insert-button"
+                            onClick={() => insertImageMarkdown(filename)}
+                            title="Insert markdown image code in the editor"
+                          >
+                            Insert in Editor
+                          </button>
+                          <button
+                            className="delete-button small"
+                            onClick={() => {
+                              if (window.confirm('Are you sure you want to delete this image?')) {
+                                deleteImage(filename);
+                              }
+                            }}
+                            title="Delete this image"
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
             
             <div className="image-usage-info">
               <h4>Using Images in Markdown</h4>
               <p>To add an image to your content, use the following markdown syntax:</p>
-              <pre>![Alt text](/path/to/image.jpg)</pre>
-              <p>You can copy image URLs from the list above, or click "Insert" to add them directly to your content.</p>
+              <pre>![Alt text](filename.jpg)</pre>
+              <p>You can copy image filenames from the list above, or click "Insert in Editor" to add them directly to your content.</p>
+              
+              <h4>Advanced Image Formatting</h4>
+              <p>You can use special modifiers with your images:</p>
+              <ul>
+                <li><code>![Alt text](image.jpg#center)</code> - Center the image</li>
+                <li><code>![Alt text](image.jpg#small)</code> - Display as a smaller image</li>
+                <li><code>![Alt text](image.jpg "Caption text")</code> - Add a caption</li>
+              </ul>
             </div>
           </div>
         </div>
