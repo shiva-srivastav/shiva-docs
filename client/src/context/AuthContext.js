@@ -2,7 +2,8 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 
 // API URL - adjust if needed
-const API_URL = 'http://localhost:5000/api';
+// const API_URL = 'http://localhost:5000/api';
+const API_URL = process.env.REACT_APP_SERVER_API+'/api';
 
 // Create the auth context
 export const AuthContext = createContext();

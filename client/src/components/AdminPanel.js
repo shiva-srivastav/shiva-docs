@@ -163,7 +163,8 @@ const AdminPanel = () => {
       const token = localStorage.getItem('authToken');
       if (!token) return;
       
-      const API_URL = 'http://localhost:5000/api';
+      // const API_URL = 'http://localhost:5000/api';
+      const API_URL = process.env.REACT_APP_SERVER_API+'/api';
       const response = await fetch(`${API_URL}/admin/images`, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -190,7 +191,8 @@ const AdminPanel = () => {
     setImageMessage({ text: 'Uploading images...', type: 'info' });
     
     const uploadedFiles = [];
-    const API_URL = 'http://localhost:5000/api';
+    // const API_URL = 'http://localhost:5000/api';
+    const API_URL = process.env.REACT_APP_SERVER_API+'/api';
     
     try {
       for (let i = 0; i < files.length; i++) {
@@ -302,7 +304,8 @@ const AdminPanel = () => {
       const token = localStorage.getItem('authToken');
       if (!token) return false;
       
-      const API_URL = 'http://localhost:5000/api';
+      // const API_URL = 'http://localhost:5000/api';
+      const API_URL = process.env.REACT_APP_SERVER_API+'/api';
       const response = await fetch(`${API_URL}/admin/images/${filename}`, {
         method: 'DELETE',
         headers: {
