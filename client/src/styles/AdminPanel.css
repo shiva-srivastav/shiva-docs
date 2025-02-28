@@ -465,3 +465,48 @@ textarea {
     gap: 0.5rem;
   }
 }
+
+/* Add this to your src/styles/AdminPanel.css file */
+
+/* Cancel button styling */
+.cancel-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid #666;
+  background-color: #444;
+  color: #f5f5f5;
+}
+
+.cancel-button:hover {
+  background-color: #555;
+  border-color: #777;
+}
+
+/* Add edit state styling */
+.edit-mode .submit-button {
+  background-color: #2563eb;
+}
+
+.edit-mode .submit-button:hover {
+  background-color: #3b82f6;
+}
+
+/* Add edit mode highlight for the form */
+.edit-mode .admin-section {
+  border-left: 4px solid #3b82f6;
+}
+
+/* Light theme overrides */
+.light-theme .cancel-button {
+  background-color: #e0e0e0;
+  border-color: #d0d0d0;
+  color: #333;
+}
+
+.light-theme .cancel-button:hover {
+  background-color: #d0d0d0;
+  border-color: #c0c0c0;
+}
