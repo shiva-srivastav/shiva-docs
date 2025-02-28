@@ -16,7 +16,9 @@ const PageNavigation = ({ prevPage, nextPage }) => {
             <span className="nav-arrow">←</span>
             <div className="nav-content">
               <span className="nav-direction">Previous</span>
-              <span className="nav-title">{prevPage.title}</span>
+              <span className="nav-title" title={prevPage.title}>
+                {prevPage.title}
+              </span>
             </div>
           </Link>
         )}
@@ -25,7 +27,9 @@ const PageNavigation = ({ prevPage, nextPage }) => {
           <Link to={`/${nextPage.category}/${nextPage.slug}`} className="next-link">
             <div className="nav-content">
               <span className="nav-direction">Next</span>
-              <span className="nav-title">{nextPage.title}</span>
+              <span className="nav-title" title={nextPage.title}>
+                {nextPage.title}
+              </span>
             </div>
             <span className="nav-arrow">→</span>
           </Link>

@@ -27,6 +27,7 @@
      ```
 ![Git](http://localhost:5000/content/images/75afa3d5-5e3f-408f-854a-17364c52c6c2.png)
 
+![Git](https://shiva-docs.onrender.com/content/images/a46d3df7-cb59-4f09-9143-139a7275b2bb.png)
 
 #### Step 3: Configure Git for the First Time
 1. **Set Global Username**:
