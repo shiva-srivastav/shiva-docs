@@ -1,0 +1,85 @@
+/* src/styles/ContentActions.css */
+.content-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+  }
+  
+  .content-actions button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .edit-button {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+  }
+  
+  .edit-button:hover {
+    background-color: var(--bg-primary);
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+  }
+  
+  .delete-button {
+    background-color: rgba(220, 38, 38, 0.1);
+    border: 1px solid rgba(220, 38, 38, 0.2);
+    color: #dc2626;
+  }
+  
+  .delete-button:hover {
+    background-color: rgba(220, 38, 38, 0.2);
+    border-color: rgba(220, 38, 38, 0.3);
+  }
+  
+  .delete-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .content-action-error {
+    background-color: rgba(220, 38, 38, 0.1);
+    color: #dc2626;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+  
+  /* Light theme overrides */
+  .light-theme .edit-button {
+    background-color: #f5f5f5;
+    border-color: #e0e0e0;
+  }
+  
+  .light-theme .edit-button:hover {
+    background-color: #f0f0f0;
+  }
+  
+  /* Dark theme overrides */
+  .dark-theme .edit-button {
+    background-color: #2a2a2a;
+    border-color: #333;
+  }
+  
+  .dark-theme .edit-button:hover {
+    background-color: #333;
+  }
+  
+  .dark-theme .delete-button {
+    background-color: rgba(220, 38, 38, 0.15);
+  }
+  
+  .dark-theme .delete-button:hover {
+    background-color: rgba(220, 38, 38, 0.25);
+  }

@@ -17,20 +17,48 @@ const MarkdownRenderer = ({ markdown }) => {
       }
     }
     
-    return text
+    // Clean the text of any markdown formatting
+    const cleanText = text
+      .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
+      .replace(/\*(.*?)\*/g, '$1')     // Remove italic
+      .replace(/`(.*?)`/g, '$1')       // Remove code
+      .replace(/\[(.*?)\]\(.*?\)/g, '$1') // Remove links
+      .trim();
+    
+    return cleanText
       .toLowerCase()
       .replace(/[^\w\s-]/g, '')
       .replace(/\s+/g, '-')
       .replace(/--+/g, '-');
   };
 
-  // Add IDs to headings after rendering
+  // Add IDs to headings after rendering and implement smooth scrolling
   useEffect(() => {
+    if (!markdown) return;
+    
+    // Find all headings in the rendered content
     const headings = document.querySelectorAll('.markdown-body h1, .markdown-body h2, .markdown-body h3');
+    
+    // Array to store the event listener functions for cleanup
+    const clickHandlers = [];
+    
     headings.forEach(heading => {
       if (!heading.id) {
         heading.id = createId(heading.textContent);
       }
+      
+      // Add click handler to all heading elements for smooth scrolling
+      heading.style.cursor = 'pointer';
+      
+      const clickHandler = () => {
+        // Update the URL hash without scrolling
+        window.history.pushState(null, '', `#${heading.id}`);
+      };
+      
+      // Store the handler for cleanup
+      clickHandlers.push({ element: heading, handler: clickHandler });
+      
+      heading.addEventListener('click', clickHandler);
     });
     
     // Handle hash navigation on load
@@ -43,6 +71,15 @@ const MarkdownRenderer = ({ markdown }) => {
         }, 100);
       }
     }
+    
+    // Clean up event listeners
+    return () => {
+      clickHandlers.forEach(({ element, handler }) => {
+        if (element) {
+          element.removeEventListener('click', handler);
+        }
+      });
+    };
   }, [markdown]);
 
   return (
@@ -79,11 +116,11 @@ const MarkdownRenderer = ({ markdown }) => {
               );
             },
             img: ({ node, ...props }) => (
-              <img className="markdown-image" {...props} alt={props.alt || ''} />
+              <img className="markdown-image" {...props} alt={props.alt || ''} loading="lazy" />
             ),
           }}
         >
-          {markdown}
+          {markdown || ''}
         </ReactMarkdown>
       </div>
     </div>

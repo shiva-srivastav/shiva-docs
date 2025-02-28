@@ -1,5 +1,6 @@
 // src/components/AdminPanel.js
 import React, { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useContent } from '../context/ContentContext';
 import '../styles/AdminPanel.css';
 
@@ -10,8 +11,14 @@ const AdminPanel = () => {
     createCategory, 
     deleteContent, 
     deleteCategory, 
-    refreshContent 
+    refreshContent,
+    getContent 
   } = useContent();
+  
+  // Get URL search params for editing
+  const [searchParams] = useSearchParams();
+  const editCategory = searchParams.get('category');
+  const editSlug = searchParams.get('slug');
   
   // State for category creation
   const [newCategory, setNewCategory] = useState('');
@@ -35,11 +42,54 @@ const AdminPanel = () => {
   // State for tab selection
   const [activeTab, setActiveTab] = useState('content');
   
+  // State to track if we're in edit mode
+  const [isEditing, setIsEditing] = useState(false);
+  
   // References
   const fileInputRef = useRef(null);
   const imageInputRef = useRef(null);
   
-  // Load images when component mounts
+  // Load content for editing when URL parameters are present
+  useEffect(() => {
+    if (editCategory && editSlug) {
+      // Set active tab to content
+      setActiveTab('content');
+      setIsEditing(true);
+      
+      // Get the content to edit
+      const contentToEdit = getContent(editCategory, editSlug);
+      
+      if (contentToEdit) {
+        // Find the content details from sidebar data
+        const categoryData = sidebarData.find(cat => cat.slug === editCategory);
+        if (categoryData) {
+          const contentItem = categoryData.items.find(item => item.slug === editSlug);
+          if (contentItem) {
+            // Set form fields with existing content
+            setSelectedCategory(editCategory);
+            setTitle(contentItem.name);
+            setSlug(editSlug);
+            setMarkdownContent(contentToEdit);
+            
+            // Show message to the user
+            setContentMessage({ 
+              text: `Editing "${contentItem.name}"`, 
+              type: 'info' 
+            });
+          }
+        }
+      } else {
+        setContentMessage({ 
+          text: `Could not find content to edit`, 
+          type: 'error' 
+        });
+      }
+    } else {
+      setIsEditing(false);
+    }
+  }, [editCategory, editSlug, sidebarData, getContent]);
+  
+  // Load images when the images tab is activated
   useEffect(() => {
     if (activeTab === 'images') {
       loadImages();
@@ -83,7 +133,7 @@ const AdminPanel = () => {
       return;
     }
     
-    setContentMessage({ text: 'Saving content...', type: 'info' });
+    setContentMessage({ text: isEditing ? 'Updating content...' : 'Saving content...', type: 'info' });
     
     const success = await addContent({
       category: selectedCategory,
@@ -93,13 +143,27 @@ const AdminPanel = () => {
     });
     
     if (success) {
-      setContentMessage({ text: `Content "${title}" saved successfully`, type: 'success' });
+      setContentMessage({ 
+        text: isEditing 
+          ? `Content "${title}" updated successfully` 
+          : `Content "${title}" saved successfully`, 
+        type: 'success' 
+      });
       
-      // Optional: reset form fields
-      // setTitle('');
-      // setSlug('');
-      // setMarkdownContent('');
-      // setUploadedFile(null);
+      // If we're editing and changed the category or slug, clear URL params
+      if (isEditing && (editCategory !== selectedCategory || editSlug !== slug)) {
+        // Remove the search params to avoid confusion on future edits
+        window.history.replaceState({}, '', '/admin');
+        setIsEditing(false);
+      }
+      
+      // Optional: reset form fields after creating new content
+      if (!isEditing) {
+        // setTitle('');
+        // setSlug('');
+        // setMarkdownContent('');
+        // setUploadedFile(null);
+      }
     } else {
       setContentMessage({ text: 'Failed to save content', type: 'error' });
     }
@@ -332,6 +396,25 @@ const AdminPanel = () => {
     setContentMessage({ text: 'Content refreshed from server', type: 'success' });
   };
   
+  // Reset the edit form
+  const handleCancelEdit = () => {
+    // Clear form fields
+    setTitle('');
+    setSlug('');
+    setMarkdownContent('');
+    setSelectedCategory('');
+    setUploadedFile(null);
+    
+    // Clear URL params
+    window.history.replaceState({}, '', '/admin');
+    
+    // Reset edit state
+    setIsEditing(false);
+    
+    // Clear message
+    setContentMessage({ text: '', type: '' });
+  };
+  
   return (
     <div className="admin-panel">
       <h1>Content Management</h1>
@@ -359,7 +442,7 @@ const AdminPanel = () => {
       
       {activeTab === 'content' && (
         <div className="admin-section">
-          <h2>Add/Edit Content</h2>
+          <h2>{isEditing ? 'Edit Content' : 'Add Content'}</h2>
           
           {contentMessage.text && (
             <div className={`message ${contentMessage.type}`}>
@@ -455,7 +538,20 @@ Write your markdown content here..."
             </div>
             
             <div className="button-group">
-              <button type="submit" className="submit-button">Save Content</button>
+              <button type="submit" className="submit-button">
+                {isEditing ? 'Update Content' : 'Save Content'}
+              </button>
+              
+              {isEditing && (
+                <button 
+                  type="button" 
+                  className="cancel-button"
+                  onClick={handleCancelEdit}
+                >
+                  Cancel Editing
+                </button>
+              )}
+              
               <button 
                 type="button" 
                 className="refresh-button"

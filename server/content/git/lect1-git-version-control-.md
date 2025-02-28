@@ -1,4 +1,4 @@
-# Lect1 (Git Version Control)
+# Lect1 (Git Version)
 
 ### 1. Local Version Control
 - **Definition**: Tracks changes in files on a single computer. A version database is used to store different versions of files.
