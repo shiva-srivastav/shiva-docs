@@ -1,0 +1,34 @@
+/* src/styles/MermaidDiagram.css */
+.mermaid-diagram-container {
+    margin: 1.5rem 0;
+    text-align: center;
+    overflow-x: auto;
+    background-color: var(--bg-secondary);
+    padding: 1rem;
+    border-radius: 8px;
+  }
+
+  .mermaid-diagram {
+    display: inline-block;
+    min-width: 200px;
+  }
+
+  .mermaid-error {
+    color: #dc2626;
+    padding: 1rem;
+    border: 1px dashed #dc2626;
+    border-radius: 4px;
+    font-family: monospace;
+    white-space: pre-wrap;
+    text-align: left;
+  }
+
+  /* Light theme adjustments */
+  .light-theme .mermaid-diagram-container {
+    background-color: #f8f9fa;
+  }
+
+  /* Dark theme adjustments */
+  .dark-theme .mermaid-diagram-container {
+    background-color: #1a1a1a;
+  }

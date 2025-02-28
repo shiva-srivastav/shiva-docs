@@ -1,12 +1,68 @@
 // src/components/MarkdownRenderer.js
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
+import { createRoot } from 'react-dom/client';
 import CodeBlock from './CodeBlock';
+import MermaidDiagram from './MermaidDiagram';
 import '../styles/MarkdownRenderer.css';
 
 const MarkdownRenderer = ({ markdown }) => {
+  const [mermaidDiagrams, setMermaidDiagrams] = useState([]);
+  const [processedMarkdown, setProcessedMarkdown] = useState('');
+  // Store root references for proper cleanup
+  const [rootRefs, setRootRefs] = useState([]);
+
+  // Process the markdown to extract mermaid diagrams
+  useEffect(() => {
+    if (!markdown) {
+      setProcessedMarkdown('');
+      setMermaidDiagrams([]);
+      return;
+    }
+
+    const mermaidPattern = /```mermaid\n([\s\S]*?)```/g;
+    const diagrams = [];
+    let lastIndex = 0;
+    let result = '';
+    let match;
+
+    // Reset the regex index
+    mermaidPattern.lastIndex = 0;
+
+    while ((match = mermaidPattern.exec(markdown)) !== null) {
+      // Add text before the diagram
+      result += markdown.substring(lastIndex, match.index);
+      
+      // Generate a unique ID for this diagram
+      const id = `mermaid-${diagrams.length}-${Date.now().toString(36)}`;
+      
+      // Add a placeholder for the diagram
+      result += `<div id="${id}" class="mermaid-placeholder"></div>`;
+      
+      // Store the diagram information
+      diagrams.push({
+        id,
+        code: match[1].trim()
+      });
+      
+      lastIndex = match.index + match[0].length;
+    }
+
+    // Add any remaining text
+    result += markdown.substring(lastIndex);
+    
+    // If no mermaid diagrams found, use the original markdown
+    if (diagrams.length === 0) {
+      setProcessedMarkdown(markdown);
+    } else {
+      setProcessedMarkdown(result);
+    }
+    
+    setMermaidDiagrams(diagrams);
+  }, [markdown]);
+
   // Convert heading text to a valid ID format
   const createId = (text) => {
     if (typeof text !== 'string') {
@@ -82,6 +138,59 @@ const MarkdownRenderer = ({ markdown }) => {
     };
   }, [markdown]);
 
+  // Render mermaid diagrams
+  useEffect(() => {
+    // Cleanup previous roots
+    rootRefs.forEach(({ root }) => {
+      try {
+        root.unmount();
+      } catch (error) {
+        console.error('Error unmounting React component:', error);
+      }
+    });
+    
+    const newRootRefs = [];
+    
+    // For each mermaid diagram, find its placeholder and render the component
+    mermaidDiagrams.forEach(diagram => {
+      const placeholder = document.getElementById(diagram.id);
+      if (placeholder) {
+        // Clear any existing content
+        placeholder.innerHTML = '';
+        
+        // Create a new diagram component
+        const diagramDiv = document.createElement('div');
+        placeholder.appendChild(diagramDiv);
+        
+        // Use createRoot to render the MermaidDiagram component
+        try {
+          const root = createRoot(diagramDiv);
+          root.render(<MermaidDiagram chart={diagram.code} />);
+          
+          // Store the root reference for cleanup
+          newRootRefs.push({ root, element: diagramDiv });
+        } catch (error) {
+          console.error('Error rendering Mermaid diagram:', error);
+          diagramDiv.innerHTML = `<div class="mermaid-error">Error rendering diagram: ${error.message}</div>`;
+        }
+      }
+    });
+    
+    // Update the state with the new root references
+    setRootRefs(newRootRefs);
+    
+    // Cleanup function for component unmount
+    return () => {
+      newRootRefs.forEach(({ root }) => {
+        try {
+          root.unmount();
+        } catch (error) {
+          console.error('Error unmounting React component:', error);
+        }
+      });
+    };
+  }, [mermaidDiagrams]);
+
   return (
     <div className="markdown-renderer">
       <div className="markdown-body">
@@ -120,7 +229,7 @@ const MarkdownRenderer = ({ markdown }) => {
             ),
           }}
         >
-          {markdown || ''}
+          {processedMarkdown || ''}
         </ReactMarkdown>
       </div>
     </div>
