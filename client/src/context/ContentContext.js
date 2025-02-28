@@ -4,7 +4,7 @@ import { useAuth } from './AuthContext';
 
 // API URL - adjust if needed
 // const API_URL = 'http://localhost:5000/api';
-const API_URL = process.env.REACT_APP_SERVER_API+'/api';
+const API_URL = process.env.REACT_APP_SERVER_API + '/api';
 console.log(API_URL);
 // Create the content context
 export const ContentContext = createContext();
@@ -114,7 +114,7 @@ export const ContentProvider = ({ children }) => {
         [`${category}/${slug}`]: content
       }));
       
-      // Check if we're updating existing content
+      // eslint-disable-next-line no-unused-vars
       const isEditing = sidebarData.some(
         c => c.slug === category && c.items && c.items.some(i => i.slug === slug)
       );
@@ -289,7 +289,7 @@ export const ContentProvider = ({ children }) => {
       }
       
       // Update the sidebar data
-      setSidebarData(prevSidebarData => 
+      setSidebarData(prevSidebarData =>
         prevSidebarData.filter(item => item.slug !== category)
       );
       

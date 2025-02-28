@@ -16,55 +16,65 @@ const MermaidDiagram = ({ chart }) => {
   const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
 
   useEffect(() => {
-    if (mermaidRef.current) {
-      // Check for theme changes
-      const updateTheme = () => {
-        const isDarkTheme = document.documentElement.classList.contains('dark-theme');
-        mermaid.initialize({
-          startOnLoad: true,
-          theme: isDarkTheme ? 'dark' : 'default',
-          securityLevel: 'loose',
-          fontFamily: 'inherit',
-        });
-        
-        // Re-render with new theme
-        try {
-          mermaidRef.current.innerHTML = chart;
-          mermaid.init(undefined, mermaidRef.current);
-        } catch (error) {
-          console.error('Mermaid rendering error:', error);
-          mermaidRef.current.innerHTML = `<div class="mermaid-error">Diagram rendering error: ${error.message}</div>`;
-        }
-      };
+    if (!mermaidRef.current) return;
 
-      // Initial render
-      try {
-        mermaid.render(id, chart).then(({ svg }) => {
-          mermaidRef.current.innerHTML = svg;
-        }).catch(error => {
+    // Function to render the diagram using mermaid.render()
+    const renderDiagram = () => {
+      mermaid
+        .render(id, chart)
+        .then(({ svg }) => {
+          if (mermaidRef.current) {
+            mermaidRef.current.innerHTML = svg;
+          }
+        })
+        .catch(error => {
           console.error('Mermaid rendering error:', error);
-          mermaidRef.current.innerHTML = `<div class="mermaid-error">Diagram rendering error: ${error.message}</div>`;
-        });
-      } catch (error) {
-        console.error('Mermaid rendering error:', error);
-        mermaidRef.current.innerHTML = `<div class="mermaid-error">Diagram rendering error: ${error.message}</div>`;
-      }
-
-      // Listen for theme changes
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          if (mutation.attributeName === 'class') {
-            updateTheme();
+          if (mermaidRef.current) {
+            mermaidRef.current.innerHTML = `<div class="mermaid-error">Diagram rendering error: ${error.message}</div>`;
           }
         });
-      });
+    };
 
-      observer.observe(document.documentElement, { attributes: true });
-      
-      // Cleanup observer on unmount
-      return () => observer.disconnect();
-    }
-  }, [chart]);
+    renderDiagram();
+
+    // Function to update the diagram when theme changes
+    const updateTheme = () => {
+      if (!mermaidRef.current) return;
+      const isDarkTheme = document.documentElement.classList.contains('dark-theme');
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: isDarkTheme ? 'dark' : 'default',
+        securityLevel: 'loose',
+        fontFamily: 'inherit',
+      });
+      try {
+        if (mermaidRef.current) {
+          mermaidRef.current.innerHTML = chart;
+          mermaid.init(undefined, mermaidRef.current);
+        }
+      } catch (error) {
+        console.error('Mermaid rendering error:', error);
+        if (mermaidRef.current) {
+          mermaidRef.current.innerHTML = `<div class="mermaid-error">Diagram rendering error: ${error.message}</div>`;
+        }
+      }
+    };
+
+    // Observe changes to the document class (for theme changes)
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          updateTheme();
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, { attributes: true });
+    
+    return () => {
+      observer.disconnect();
+    };
+  }, [chart, id]);
 
   return (
     <div className="mermaid-diagram-container">

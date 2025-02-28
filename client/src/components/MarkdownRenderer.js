@@ -1,5 +1,5 @@
 // src/components/MarkdownRenderer.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
@@ -11,8 +11,8 @@ import '../styles/MarkdownRenderer.css';
 const MarkdownRenderer = ({ markdown }) => {
   const [mermaidDiagrams, setMermaidDiagrams] = useState([]);
   const [processedMarkdown, setProcessedMarkdown] = useState('');
-  // Store root references for proper cleanup
-  const [rootRefs, setRootRefs] = useState([]);
+  // Use a ref to hold root references for proper cleanup without causing re-renders
+  const rootRefs = useRef([]);
 
   // Process the markdown to extract mermaid diagrams
   useEffect(() => {
@@ -141,7 +141,7 @@ const MarkdownRenderer = ({ markdown }) => {
   // Render mermaid diagrams
   useEffect(() => {
     // Cleanup previous roots
-    rootRefs.forEach(({ root }) => {
+    rootRefs.current.forEach(({ root }) => {
       try {
         root.unmount();
       } catch (error) {
@@ -176,8 +176,8 @@ const MarkdownRenderer = ({ markdown }) => {
       }
     });
     
-    // Update the state with the new root references
-    setRootRefs(newRootRefs);
+    // Update the ref with the new root references
+    rootRefs.current = newRootRefs;
     
     // Cleanup function for component unmount
     return () => {
