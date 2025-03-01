@@ -9,7 +9,7 @@ const AdminPanel = () => {
     sidebarData, 
     addContent, 
     createCategory, 
-    deleteContent, 
+    // deleteContent is not used, so removed from destructuring
     deleteCategory, 
     refreshContent,
     getContent 
@@ -565,48 +565,48 @@ Write your markdown content here..."
             </div>
           </form>
           
-          // Update the markdown-help div in AdminPanel.js with Mermaid information
+          {/* Update the markdown-help div in AdminPanel.js with Mermaid information */}
 
-<div className="markdown-help">
-  <h3>Markdown Tips</h3>
-  <ul>
-    <li><code># Heading 1</code> - Main title</li>
-    <li><code>## Heading 2</code> - Section title</li>
-    <li><code>### Heading 3</code> - Subsection title</li>
-    <li><code>*italic*</code> or <code>_italic_</code> - <em>Italic text</em></li>
-    <li><code>**bold**</code> or <code>__bold__</code> - <strong>Bold text</strong></li>
-    <li><code>[Link text](URL)</code> - <a href="#">Link</a></li>
-    <li><code>![Alt text](image-filename.jpg)</code> - Image</li>
-    <li><code>```language
-code block
-```</code> - Code block with syntax highlighting</li>
-    <li><code>- Item</code> - Bullet list</li>
-    <li><code>1. Item</code> - Numbered list</li>
-  </ul>
-  
-  <h3>Mermaid Diagrams</h3>
-  <p>Create diagrams using Mermaid syntax:</p>
-  <pre>{`\`\`\`mermaid
-flowchart TD
-    A[Start] --> B{Is it?}
-    B -->|Yes| C[OK]
-    C --> D[Rethink]
-    D --> B
-    B ---->|No| E[End]
-\`\`\``}</pre>
-  
-  <h4>Mermaid Examples</h4>
-  <ul>
-    <li><strong>Flowchart</strong> - <code>flowchart TD</code></li>
-    <li><strong>Sequence Diagram</strong> - <code>sequenceDiagram</code></li>
-    <li><strong>Class Diagram</strong> - <code>classDiagram</code></li>
-    <li><strong>Entity Relationship</strong> - <code>erDiagram</code></li>
-    <li><strong>State Diagram</strong> - <code>stateDiagram-v2</code></li>
-    <li><strong>Gantt Chart</strong> - <code>gantt</code></li>
-    <li><strong>Pie Chart</strong> - <code>pie</code></li>
-  </ul>
-  <p>For more examples and syntax, visit the <a href="https://mermaid.js.org/" target="_blank" rel="noopener noreferrer">Mermaid Documentation</a>.</p>
-</div>
+          <div className="markdown-help">
+            <h3>Markdown Tips</h3>
+            <ul>
+              <li><code># Heading 1</code> - Main title</li>
+              <li><code>## Heading 2</code> - Section title</li>
+              <li><code>### Heading 3</code> - Subsection title</li>
+              <li><code>*italic*</code> or <code>_italic_</code> - <em>Italic text</em></li>
+              <li><code>**bold**</code> or <code>__bold__</code> - <strong>Bold text</strong></li>
+              <li><code>[Link text](URL)</code> - <a href="https://example.com">Link</a></li>
+              <li><code>![Alt text](image-filename.jpg)</code> - Image</li>
+              <li><code>```language
+  code block
+  ```</code> - Code block with syntax highlighting</li>
+              <li><code>- Item</code> - Bullet list</li>
+              <li><code>1. Item</code> - Numbered list</li>
+            </ul>
+            
+            <h3>Mermaid Diagrams</h3>
+            <p>Create diagrams using Mermaid syntax:</p>
+            <pre>{`\`\`\`mermaid
+  flowchart TD
+      A[Start] --> B{Is it?}
+      B -->|Yes| C[OK]
+      C --> D[Rethink]
+      D --> B
+      B ---->|No| E[End]
+  \`\`\``}</pre>
+            
+            <h4>Mermaid Examples</h4>
+            <ul>
+              <li><strong>Flowchart</strong> - <code>flowchart TD</code></li>
+              <li><strong>Sequence Diagram</strong> - <code>sequenceDiagram</code></li>
+              <li><strong>Class Diagram</strong> - <code>classDiagram</code></li>
+              <li><strong>Entity Relationship</strong> - <code>erDiagram</code></li>
+              <li><strong>State Diagram</strong> - <code>stateDiagram-v2</code></li>
+              <li><strong>Gantt Chart</strong> - <code>gantt</code></li>
+              <li><strong>Pie Chart</strong> - <code>pie</code></li>
+            </ul>
+            <p>For more examples and syntax, visit the <a href="https://mermaid.js.org/" target="_blank" rel="noopener noreferrer">Mermaid Documentation</a>.</p>
+          </div>
         </div>
       )}
       

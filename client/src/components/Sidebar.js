@@ -33,12 +33,17 @@ const Sidebar = () => {
     return location.pathname === `/${categorySlug}/${itemSlug}`;
   };
 
+  // Check if we're on the home page
+  const isHome = location.pathname === '/';
+
   return (
     <div className="sidebar">
       <div className="logo">
         <Link to="/">Shiva Docs</Link>
       </div>
       <nav className="sidebar-menu">
+        <Link to="/" className={`home-link ${isHome ? 'active' : ''}`}>Home</Link>
+        
         {sidebarData.map((category) => (
           <div key={category.slug} className="category">
             <div 

@@ -12,8 +12,8 @@
 }
 
 .logo {
-  padding: 20px;
-  font-size: 24px;
+  padding: 16px 20px;
+  font-size: 22px;
   font-weight: bold;
   border-bottom: 1px solid var(--border-color);
 }
@@ -24,21 +24,40 @@
 }
 
 .sidebar-menu {
-  padding: 10px 0;
+  padding: 0;
 }
 
 .category {
-  margin-bottom: 5px;
+  margin: 0;
+  border-bottom: 1px solid rgba(230, 230, 230, 0.1);
+}
+
+.home-link {
+  display: block;
+  padding: 12px 20px;
+  margin: 0;
+  background-color: var(--accent-color);
+  color: white !important;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 16px;
+  transition: background-color 0.2s;
+}
+
+.home-link:hover {
+  background-color: var(--accent-hover);
 }
 
 .category-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 12px 20px;
   cursor: pointer;
   transition: background-color 0.2s;
   user-select: none;
+  font-weight: 500;
+  font-size: 16px;
 }
 
 .category-header:hover {
@@ -62,14 +81,17 @@
 
 .subcategories {
   padding-left: 0;
+  border-top: 1px solid rgba(230, 230, 230, 0.05);
 }
 
 .subcategory-item {
   display: block;
-  padding: 8px 20px 8px 40px;
+  padding: 10px 20px 10px 40px;
   color: var(--text-secondary);
   text-decoration: none;
   transition: color 0.2s, background-color 0.2s;
+  font-size: 15px;
+  line-height: 1.4;
 }
 
 .subcategory-item:hover {
@@ -82,12 +104,17 @@
   background-color: rgba(255, 107, 0, 0.1);
   border-left: 3px solid var(--accent-color);
   padding-left: 37px; /* Adjust for the border */
+  font-weight: 500;
 }
 
 /* Light theme overrides */
 .light-theme .sidebar {
+  background-color: #f5f5f5;
   border-right: 1px solid #eaeaea;
-  background-color: #ffffff;
+}
+
+.light-theme .category {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .light-theme .category-header {
@@ -96,7 +123,7 @@
 }
 
 .light-theme .subcategory-item {
-  color: #666666;
+  color: #444444;
 }
 
 .light-theme .subcategory-item.active {
@@ -130,6 +157,17 @@
   border-left: 3px solid #ff8c33;
 }
 
+/* Animation for expanding and collapsing categories */
+.subcategories {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.category .subcategories {
+  max-height: 1000px; /* Large enough to fit all subcategories */
+}
+
 /* Media queries for responsive design */
 @media (max-width: 768px) {
   .sidebar {
@@ -145,15 +183,4 @@
   .subcategory-item.active {
     padding-left: 37px;
   }
-}
-
-/* Animation for expanding and collapsing categories */
-.subcategories {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease-out;
-}
-
-.category .subcategories {
-  max-height: 1000px; /* Large enough to fit all subcategories */
 }

@@ -1,5 +1,5 @@
 // src/components/PageContent.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import MarkdownRenderer from './MarkdownRenderer';
 import TableOfContents from './TableOfContents';
@@ -21,6 +21,41 @@ const PageContent = () => {
   const [error, setError] = useState(null);
   const [prevPage, setPrevPage] = useState(null);
   const [nextPage, setNextPage] = useState(null);
+
+  // Define findPrevNextPages as a memoized callback
+  const findPrevNextPages = useCallback((category, page) => {
+    // Find the current category in sidebar data
+    const categoryData = sidebarData.find(cat => cat.slug === category);
+    
+    if (categoryData && categoryData.items && categoryData.items.length > 0) {
+      // Find current page index
+      const currentIndex = categoryData.items.findIndex(item => item.slug === page);
+      
+      if (currentIndex > -1) {
+        // Set previous page (if not the first page)
+        if (currentIndex > 0) {
+          setPrevPage({
+            title: categoryData.items[currentIndex - 1].name,
+            category: category,
+            slug: categoryData.items[currentIndex - 1].slug
+          });
+        } else {
+          setPrevPage(null);
+        }
+        
+        // Set next page (if not the last page)
+        if (currentIndex < categoryData.items.length - 1) {
+          setNextPage({
+            title: categoryData.items[currentIndex + 1].name,
+            category: category,
+            slug: categoryData.items[currentIndex + 1].slug
+          });
+        } else {
+          setNextPage(null);
+        }
+      }
+    }
+  }, [sidebarData]);
 
   useEffect(() => {
     if (category && page) {
@@ -103,41 +138,7 @@ const PageContent = () => {
         setLoading(false);
       }, 300);
     }
-  }, [category, page, getContent, sidebarData]);
-
-  const findPrevNextPages = (category, page) => {
-    // Find the current category in sidebar data
-    const categoryData = sidebarData.find(cat => cat.slug === category);
-    
-    if (categoryData && categoryData.items && categoryData.items.length > 0) {
-      // Find current page index
-      const currentIndex = categoryData.items.findIndex(item => item.slug === page);
-      
-      if (currentIndex > -1) {
-        // Set previous page (if not the first page)
-        if (currentIndex > 0) {
-          setPrevPage({
-            title: categoryData.items[currentIndex - 1].name,
-            category: category,
-            slug: categoryData.items[currentIndex - 1].slug
-          });
-        } else {
-          setPrevPage(null);
-        }
-        
-        // Set next page (if not the last page)
-        if (currentIndex < categoryData.items.length - 1) {
-          setNextPage({
-            title: categoryData.items[currentIndex + 1].name,
-            category: category,
-            slug: categoryData.items[currentIndex + 1].slug
-          });
-        } else {
-          setNextPage(null);
-        }
-      }
-    }
-  };
+  }, [category, page, getContent, sidebarData, findPrevNextPages]);
 
   if (loading) {
     return <Loading />;
@@ -146,6 +147,7 @@ const PageContent = () => {
   return (
     <div className="page-content">
       <Breadcrumbs />
+      {error && <div className="error-message">{error}</div>}
       <div className="content-wrapper">
         <div className="content-main">
           <MarkdownRenderer markdown={content} />
