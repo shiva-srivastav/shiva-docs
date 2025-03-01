@@ -1,4 +1,4 @@
-# 08_lect_15_Feb_2025_linux5
+# 08_lect_16_Feb_2025_linux5
 
 ## 1. Find and Locate Commands
 ### locate
